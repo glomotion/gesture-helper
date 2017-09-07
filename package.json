@@ -4,7 +4,7 @@
   "description": "a simple touch & mouse library to help make tracking touch interactions more simple.",
   "main": "dist/budle.js",
   "repository": "https://github.com/glomotion/gesture-helper.git",
-  "author": "Tim Paul <tim@glo.id.au>",
+  "author": "Tim Paull <tim@glo.id.au>",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.3.2",
