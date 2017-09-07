@@ -75,10 +75,12 @@ export default class GestureHelper {
   }
 
   handleStart({x=0,y=0}) {
+
+    // Ensure all settings are reset:
     this.startX = x;
     this.startY = y;
     this.startDirection = null;
-    this.directionCount = 0;
+    this.directionCount = 1;
     this.panning = false;
     this.startTime = perf.now();
     this.maxVelocity = this.currVelocity = 0;

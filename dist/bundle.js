@@ -173,10 +173,12 @@ var GestureHelper = function () {
           _ref$y = _ref.y,
           y = _ref$y === undefined ? 0 : _ref$y;
 
+
+      // Ensure all settings are reset:
       this.startX = x;
       this.startY = y;
       this.startDirection = null;
-      this.directionCount = 0;
+      this.directionCount = 1;
       this.panning = false;
       this.startTime = _performanceNow2.default.now();
       this.maxVelocity = this.currVelocity = 0;
