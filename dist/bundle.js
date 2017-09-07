@@ -84,31 +84,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DEFAULT_SWIPE_VELOCITY = 0.6;
-var DIRECTION_THRESHOLD = 10;
-var CHECK_DIRECTION_COUNT = 2;
-
-var eventOptions = false;
-try {
-  var options = Object.defineProperty({}, "passive", {
-    get: function get() {
-      eventOptions = {
-        passive: false,
-        capture: true
-      };
-    }
-  });
-  window.addEventListener("test", null, options);
-} catch (err) {}
-
 var GestureHelper = function () {
   function GestureHelper(el, options) {
+    var _this = this;
+
     _classCallCheck(this, GestureHelper);
 
     this.el = el;
     this.options = Object.assign({}, {
-      threshold: DIRECTION_THRESHOLD,
-      swipeVelocity: DEFAULT_SWIPE_VELOCITY,
+      threshold: 5,
+      swipeVelocity: 0.6,
       onPanStart: function onPanStart() {},
       onPan: function onPan() {},
       onPanEnd: function onPanEnd() {}
@@ -116,6 +101,21 @@ var GestureHelper = function () {
     this.panning = false;
     this.startDirection = null;
     this.directionCount = 0;
+
+    // Small feature detect for "passive" events
+    this.eventOptions = false;
+    try {
+      var options = Object.defineProperty({}, "passive", {
+        get: function get() {
+          _this.eventOptions = {
+            passive: false,
+            capture: true
+          };
+        }
+      });
+      this.el.addEventListener("test", null, options);
+    } catch (err) {}
+
     this.setup();
   }
 
@@ -127,51 +127,66 @@ var GestureHelper = function () {
   }, {
     key: 'setup',
     value: function setup() {
-      var _this = this;
+      var _this2 = this;
 
       // MOUSE
       var mouseMoveHandler = function mouseMoveHandler(e) {
-        return _this.handleMove({
+        return _this2.handleMove({
           e: e, x: e.clientX, y: e.clientY
         });
       };
       this.el.addEventListener('mousedown', function (e) {
-        _this.handleStart({ x: e.clientX, y: e.clientY });
-        _this.el.addEventListener('mousemove', mouseMoveHandler, eventOptions);
-      }, eventOptions);
+        _this2.handleStart({ x: e.clientX, y: e.clientY });
+        _this2.el.addEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
+      }, this.eventOptions);
       this.el.addEventListener('mouseup', function (e) {
-        _this.handleEnd();
+        _this2.handleEnd();
         console.log('kill listeners!!');
-        _this.el.removeEventListener('mousemove', mouseMoveHandler, eventOptions);
-      }, eventOptions);
+        _this2.el.removeEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
+      }, this.eventOptions);
 
       // TOUCH
       var touchMoveHandler = function touchMoveHandler(e) {
-        return _this.handleMove({
+        return _this2.handleMove({
           e: e,
           x: e.touches[0].clientX, y: e.touches[0].clientY
         });
       };
       var touchEndHandler = function touchEndHandler(e) {
-        _this.handleEnd();
-        _this.el.removeEventListener('touchmove', touchMoveHandler, eventOptions);
+        _this2.handleEnd();
+        _this2.el.removeEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
       };
       this.el.addEventListener('touchstart', function (e) {
-        _this.handleStart({
+        _this2.handleStart({
           x: e.touches[0].clientX, y: e.touches[0].clientY
         });
-        _this.el.addEventListener('touchmove', touchMoveHandler, eventOptions);
+        _this2.el.addEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
       }, false);
-      this.el.addEventListener('touchend', touchEndHandler, eventOptions);
-      this.el.addEventListener('touchcancel', touchEndHandler, eventOptions);
+      this.el.addEventListener('touchend', touchEndHandler, this.eventOptions);
+      this.el.addEventListener('touchcancel', touchEndHandler, this.eventOptions);
     }
   }, {
-    key: 'handleStart',
-    value: function handleStart(_ref) {
+    key: 'getStartDirection',
+    value: function getStartDirection(_ref) {
       var _ref$x = _ref.x,
           x = _ref$x === undefined ? 0 : _ref$x,
           _ref$y = _ref.y,
           y = _ref$y === undefined ? 0 : _ref$y;
+
+      if (this.directionCount < 2) {
+        this.directionCount++;
+        return null;
+      } else {
+        return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
+      }
+    }
+  }, {
+    key: 'handleStart',
+    value: function handleStart(_ref2) {
+      var _ref2$x = _ref2.x,
+          x = _ref2$x === undefined ? 0 : _ref2$x,
+          _ref2$y = _ref2.y,
+          y = _ref2$y === undefined ? 0 : _ref2$y;
 
 
       // Ensure all settings are reset:
@@ -182,21 +197,6 @@ var GestureHelper = function () {
       this.panning = false;
       this.startTime = (0, _performanceNow2.default)();
       this.maxVelocity = this.currVelocity = 0;
-    }
-  }, {
-    key: 'getStartDirection',
-    value: function getStartDirection(_ref2) {
-      var _ref2$x = _ref2.x,
-          x = _ref2$x === undefined ? 0 : _ref2$x,
-          _ref2$y = _ref2.y,
-          y = _ref2$y === undefined ? 0 : _ref2$y;
-
-      if (this.directionCount < CHECK_DIRECTION_COUNT) {
-        this.directionCount++;
-        return null;
-      } else {
-        return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
-      }
     }
   }, {
     key: 'handleMove',
@@ -220,7 +220,7 @@ var GestureHelper = function () {
       }
 
       if (this.panning) {
-        if (eventOptions && eventOptions.passive === false) {
+        if (this.eventOptions && this.eventOptions.passive === false) {
           e.preventDefault();
         }
         this.options.onPan({ deltaX: deltaX });
