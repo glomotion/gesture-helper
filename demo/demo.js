@@ -6,6 +6,8 @@ let gestureControl = new GestureHelper(document.body, {
   onPan: (e) => {
     demoOutput.innerHTML = JSON.stringify(e);
   },
-  onPanEnd: (e) => {},
+  onPanEnd: (e) => {
+    demoOutput.innerHTML = `click &amp; drag horizontally ...`;
+  },
 });
 
