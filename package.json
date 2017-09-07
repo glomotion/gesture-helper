@@ -17,6 +17,7 @@
   },
   "scripts": {
     "demo": "webpack-dev-server --config ./webpack.demo.config.js --colors --open",
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "prepublish": "webpack --config ./webpack.config.js"
   }
 }

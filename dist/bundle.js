@@ -180,7 +180,7 @@ var GestureHelper = function () {
       this.startDirection = null;
       this.directionCount = 1;
       this.panning = false;
-      this.startTime = _performanceNow2.default.now();
+      this.startTime = (0, _performanceNow2.default)();
       this.maxVelocity = this.currVelocity = 0;
     }
   }, {
@@ -226,7 +226,7 @@ var GestureHelper = function () {
         this.options.onPan({ deltaX: deltaX });
 
         // velocity = the time taken / total distance moved:
-        this.currVelocity = deltaX / (_performanceNow2.default.now() - this.startTime);
+        this.currVelocity = deltaX / ((0, _performanceNow2.default)() - this.startTime);
         this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
       }
     }
