@@ -72,6 +72,15 @@ export default class GestureHelper {
     this.el.addEventListener('touchcancel', touchEndHandler, this.eventOptions);
   }
 
+  getStartDirection({x=0,y=0}) {
+    if (this.directionCount < 2) {
+      this.directionCount++;
+      return null;
+    } else {
+      return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
+    }
+  }
+
   handleStart({x=0,y=0}) {
 
     // Ensure all settings are reset:
@@ -82,15 +91,6 @@ export default class GestureHelper {
     this.panning = false;
     this.startTime = perfNow();
     this.maxVelocity = this.currVelocity = 0;
-  }
-
-  getStartDirection({x=0,y=0}) {
-    if (this.directionCount < 2) {
-      this.directionCount++;
-      return null;
-    } else {
-      return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
-    }
   }
 
   handleMove({e={},x=0,y=0}) {
