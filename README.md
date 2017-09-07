@@ -1,10 +1,12 @@
 # gesture-helper
-a simple touch &amp; mouse library to help make tracking touch interactions more simple.
+a *tiny* touch & mouse library to help make tracking touch interactions more simple.
+
+** *note:** This lib currently only supports horizontal movement. If/when it detects up and down movement (at gesture start), it stands down so that the browser can scroll, as per usual.
 
 # install:
 ```yarn install gesture-helper```
 
-then
+then:
 ```
 let gestureControl = new GestureHelper(document.querySelector('.el'), {
   onPanStart: () => {},
@@ -15,7 +17,7 @@ let gestureControl = new GestureHelper(document.querySelector('.el'), {
 
 # optional settings:
 ```
-threshold: 10,
-swipeVelocity: 0 - 2
+  threshold: Number(10), // Px's movement to allow before capturing pan event
+  swipeVelocity: 0 - 2, // Velocity measurement for swipe detection
 ```
 
