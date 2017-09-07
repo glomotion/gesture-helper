@@ -2,19 +2,6 @@
 
 import perfNow from 'performance-now';
 
-var eventOptions = false;
-try {
-  var options = Object.defineProperty({}, "passive", {
-    get: () => {
-      eventOptions = {
-        passive: false,
-        capture: true
-      };
-    }
-  });
-  window.addEventListener("test", null, options);
-} catch(err) {}
-
 export default class GestureHelper {
   constructor(el, options) {
     this.el = el;
@@ -28,6 +15,21 @@ export default class GestureHelper {
     this.panning = false;
     this.startDirection = null;
     this.directionCount = 0;
+
+    // Small feature detect for "passive" events
+    this.eventOptions = false;
+    try {
+      var options = Object.defineProperty({}, "passive", {
+        get: () => {
+          this.eventOptions = {
+            passive: false,
+            capture: true
+          };
+        }
+      });
+      this.el.addEventListener("test", null, options);
+    } catch(err) {}
+
     this.setup();
   }
 
@@ -43,13 +45,13 @@ export default class GestureHelper {
     });
     this.el.addEventListener('mousedown', e => {
       this.handleStart({ x: e.clientX, y: e.clientY });
-      this.el.addEventListener('mousemove', mouseMoveHandler, eventOptions);
-    }, eventOptions);
+      this.el.addEventListener('mousemove', mouseMoveHandler, this.eventOptions);
+    }, this.eventOptions);
     this.el.addEventListener('mouseup', e => {
       this.handleEnd();
       console.log('kill listeners!!');
-      this.el.removeEventListener('mousemove', mouseMoveHandler, eventOptions);
-    }, eventOptions);
+      this.el.removeEventListener('mousemove', mouseMoveHandler, this.eventOptions);
+    }, this.eventOptions);
 
     // TOUCH
     let touchMoveHandler = e => this.handleMove({
@@ -58,16 +60,16 @@ export default class GestureHelper {
     });
     let touchEndHandler = e => {
       this.handleEnd();
-      this.el.removeEventListener('touchmove', touchMoveHandler, eventOptions);
+      this.el.removeEventListener('touchmove', touchMoveHandler, this.eventOptions);
     };
     this.el.addEventListener('touchstart', e => {
       this.handleStart({
         x: e.touches[0].clientX, y: e.touches[0].clientY
       });
-      this.el.addEventListener('touchmove', touchMoveHandler, eventOptions);
+      this.el.addEventListener('touchmove', touchMoveHandler, this.eventOptions);
     }, false);
-    this.el.addEventListener('touchend', touchEndHandler, eventOptions);
-    this.el.addEventListener('touchcancel', touchEndHandler, eventOptions);
+    this.el.addEventListener('touchend', touchEndHandler, this.eventOptions);
+    this.el.addEventListener('touchcancel', touchEndHandler, this.eventOptions);
   }
 
   handleStart({x=0,y=0}) {
@@ -106,7 +108,7 @@ export default class GestureHelper {
     }
 
     if (this.panning) {
-      if (eventOptions && eventOptions.passive === false) {
+      if (this.eventOptions && this.eventOptions.passive === false) {
         e.preventDefault();
       }
       this.options.onPan({deltaX});
