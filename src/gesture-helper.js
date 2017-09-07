@@ -1,6 +1,6 @@
 'use strict';
 
-import perf from 'performance-now';
+import perfNow from 'performance-now';
 
 const DEFAULT_SWIPE_VELOCITY = 0.6;
 const DIRECTION_THRESHOLD = 10;
@@ -82,7 +82,7 @@ export default class GestureHelper {
     this.startDirection = null;
     this.directionCount = 1;
     this.panning = false;
-    this.startTime = perf.now();
+    this.startTime = perfNow();
     this.maxVelocity = this.currVelocity = 0;
   }
 
@@ -116,7 +116,7 @@ export default class GestureHelper {
       this.options.onPan({deltaX});
 
       // velocity = the time taken / total distance moved:
-      this.currVelocity = deltaX / (perf.now() - this.startTime);
+      this.currVelocity = deltaX / (perfNow() - this.startTime);
       this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
     }
   }
