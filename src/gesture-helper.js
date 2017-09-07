@@ -7,7 +7,7 @@ export default class GestureHelper {
     this.el = el;
     this.options = Object.assign({}, {
       threshold: 5,
-      swipeVelocity: 0.6,
+      swipeVelocity: 0.7,
       onPanStart: () => {},
       onPan: () => {},
       onPanEnd: () => {}
