@@ -225,7 +225,7 @@ var GestureHelper = function () {
         }
         this.options.onPan({ deltaX: deltaX });
 
-        // velocity = the time taken / total distance moved:
+        // velocity = total distance moved / the time taken
         this.currVelocity = deltaX / ((0, _performanceNow2.default)() - this.startTime);
         this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
       }
