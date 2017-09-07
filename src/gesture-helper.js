@@ -2,10 +2,6 @@
 
 import perfNow from 'performance-now';
 
-const DEFAULT_SWIPE_VELOCITY = 0.6;
-const DIRECTION_THRESHOLD = 10;
-const CHECK_DIRECTION_COUNT = 2;
-
 var eventOptions = false;
 try {
   var options = Object.defineProperty({}, "passive", {
@@ -23,8 +19,8 @@ export default class GestureHelper {
   constructor(el, options) {
     this.el = el;
     this.options = Object.assign({}, {
-      threshold: DIRECTION_THRESHOLD,
-      swipeVelocity: DEFAULT_SWIPE_VELOCITY,
+      threshold: 5,
+      swipeVelocity: 0.6,
       onPanStart: () => {},
       onPan: () => {},
       onPanEnd: () => {}
@@ -87,7 +83,7 @@ export default class GestureHelper {
   }
 
   getStartDirection({x=0,y=0}) {
-    if (this.directionCount < CHECK_DIRECTION_COUNT) {
+    if (this.directionCount < 2) {
       this.directionCount++;
       return null;
     } else {
