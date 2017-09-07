@@ -115,7 +115,7 @@ export default class GestureHelper {
       }
       this.options.onPan({deltaX});
 
-      // velocity = the time taken / total distance moved:
+      // velocity = total distance moved / the time taken
       this.currVelocity = deltaX / (perfNow() - this.startTime);
       this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
     }
