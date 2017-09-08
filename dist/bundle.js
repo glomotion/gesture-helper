@@ -92,7 +92,7 @@ var GestureHelper = function () {
 
     this.el = el;
     this.options = Object.assign({}, {
-      threshold: 5,
+      sensitivity: 5,
       swipeVelocity: 0.7,
       onPanStart: function onPanStart() {},
       onPan: function onPan() {},
@@ -213,7 +213,7 @@ var GestureHelper = function () {
 
       if (this.startDirection === null) {
         this.startDirection = this.getStartDirection({ x: deltaX, y: deltaY });
-      } else if (this.startDirection === 'horizontal' && !this.panning && Math.abs(deltaX) > this.options.threshold) {
+      } else if (this.startDirection === 'horizontal' && !this.panning && Math.abs(deltaX) > this.options.sensitivity) {
 
         this.panning = true;
         this.options.onPanStart({});
