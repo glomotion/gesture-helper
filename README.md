@@ -15,9 +15,9 @@ let gestureControl = new GestureHelper(document.querySelector('.el'), {
 });
 ```
 
-# optional settings:
+# optional settings (with default value):
 ```
-  threshold: Number(10), // Integer: Px's movement to allow before capturing pan event
-  swipeVelocity: 0 - 2, // Float: Velocity threshold range for varied swipe detection
+  sensitivity: Number(5), // Integer: Px's movement to allow before capturing pan event
+  swipeVelocity: Float(0.7), // Float: Velocity threshold range for varied swipe detection
 ```
 

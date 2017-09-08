@@ -6,7 +6,7 @@ export default class GestureHelper {
   constructor(el, options) {
     this.el = el;
     this.options = Object.assign({}, {
-      threshold: 5,
+      sensitivity: 5,
       swipeVelocity: 0.7,
       onPanStart: () => {},
       onPan: () => {},
@@ -101,7 +101,7 @@ export default class GestureHelper {
       this.startDirection = this.getStartDirection({x:deltaX,y:deltaY});
     } else if (this.startDirection === 'horizontal'
       && !this.panning
-      && Math.abs(deltaX) > this.options.threshold) {
+      && Math.abs(deltaX) > this.options.sensitivity) {
 
       this.panning = true;
       this.options.onPanStart({});
