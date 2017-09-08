@@ -49,7 +49,6 @@ export default class GestureHelper {
     }, this.eventOptions);
     this.el.addEventListener('mouseup', e => {
       this.handleEnd();
-      console.log('kill listeners!!');
       this.el.removeEventListener('mousemove', mouseMoveHandler, this.eventOptions);
     }, this.eventOptions);
 
