@@ -141,7 +141,6 @@ var GestureHelper = function () {
       }, this.eventOptions);
       this.el.addEventListener('mouseup', function (e) {
         _this2.handleEnd();
-        console.log('kill listeners!!');
         _this2.el.removeEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
       }, this.eventOptions);
 
