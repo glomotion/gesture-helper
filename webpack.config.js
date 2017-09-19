@@ -8,6 +8,9 @@ module.exports = {
     path: require('path').resolve('./dist/'),
     filename: 'bundle.js',
     publicPath: '/',
+    library: 'gesture-helper',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
   resolve: {
     modules: [
@@ -25,7 +28,9 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           babelrc: false,
-          presets: ['es2015'],
+          presets: [
+            ['es2015', { loose: true }],
+          ],
         }
       }
     ]

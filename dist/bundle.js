@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define("gesture-helper", [], factory);
+	else if(typeof exports === 'object')
+		exports["gesture-helper"] = factory();
+	else
+		root["gesture-helper"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -70,11 +80,7 @@
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.__esModule = true;
 
 var _performanceNow = __webpack_require__(1);
 
@@ -119,130 +125,122 @@ var GestureHelper = function () {
     this.setup();
   }
 
-  _createClass(GestureHelper, [{
-    key: 'isPanning',
-    value: function isPanning() {
-      return this.panning;
-    }
-  }, {
-    key: 'setup',
-    value: function setup() {
-      var _this2 = this;
+  GestureHelper.prototype.isPanning = function isPanning() {
+    return this.panning;
+  };
 
-      // MOUSE
-      var mouseMoveHandler = function mouseMoveHandler(e) {
-        return _this2.handleMove({
-          e: e, x: e.clientX, y: e.clientY
-        });
-      };
-      this.el.addEventListener('mousedown', function (e) {
-        _this2.handleStart({ x: e.clientX, y: e.clientY });
-        _this2.el.addEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
-      }, this.eventOptions);
-      this.el.addEventListener('mouseup', function (e) {
-        _this2.handleEnd();
-        _this2.el.removeEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
-      }, this.eventOptions);
+  GestureHelper.prototype.setup = function setup() {
+    var _this2 = this;
 
-      // TOUCH
-      var touchMoveHandler = function touchMoveHandler(e) {
-        return _this2.handleMove({
-          e: e,
-          x: e.touches[0].clientX, y: e.touches[0].clientY
-        });
-      };
-      var touchEndHandler = function touchEndHandler(e) {
-        _this2.handleEnd();
-        _this2.el.removeEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
-      };
-      this.el.addEventListener('touchstart', function (e) {
-        _this2.handleStart({
-          x: e.touches[0].clientX, y: e.touches[0].clientY
-        });
-        _this2.el.addEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
-      }, false);
-      this.el.addEventListener('touchend', touchEndHandler, this.eventOptions);
-      this.el.addEventListener('touchcancel', touchEndHandler, this.eventOptions);
-    }
-  }, {
-    key: 'getStartDirection',
-    value: function getStartDirection(_ref) {
-      var _ref$x = _ref.x,
-          x = _ref$x === undefined ? 0 : _ref$x,
-          _ref$y = _ref.y,
-          y = _ref$y === undefined ? 0 : _ref$y;
-
-      if (this.directionCount < 2) {
-        this.directionCount++;
-        return null;
-      } else {
-        return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
-      }
-    }
-  }, {
-    key: 'handleStart',
-    value: function handleStart(_ref2) {
-      var _ref2$x = _ref2.x,
-          x = _ref2$x === undefined ? 0 : _ref2$x,
-          _ref2$y = _ref2.y,
-          y = _ref2$y === undefined ? 0 : _ref2$y;
-
-
-      // Ensure all settings are reset:
-      this.startX = x;
-      this.startY = y;
-      this.startDirection = null;
-      this.directionCount = 1;
-      this.panning = false;
-      this.startTime = (0, _performanceNow2.default)();
-      this.maxVelocity = this.currVelocity = 0;
-    }
-  }, {
-    key: 'handleMove',
-    value: function handleMove(_ref3) {
-      var _ref3$e = _ref3.e,
-          e = _ref3$e === undefined ? {} : _ref3$e,
-          _ref3$x = _ref3.x,
-          x = _ref3$x === undefined ? 0 : _ref3$x,
-          _ref3$y = _ref3.y,
-          y = _ref3$y === undefined ? 0 : _ref3$y;
-
-      var deltaX = x - this.startX;
-      var deltaY = y - this.startY;
-
-      if (this.startDirection === null) {
-        this.startDirection = this.getStartDirection({ x: deltaX, y: deltaY });
-      } else if (this.startDirection === 'horizontal' && !this.panning && Math.abs(deltaX) > this.options.sensitivity) {
-
-        this.panning = true;
-        this.options.onPanStart({});
-      }
-
-      if (this.panning) {
-        if (this.eventOptions && this.eventOptions.passive === false) {
-          e.preventDefault();
-        }
-        this.options.onPan({ deltaX: deltaX });
-
-        // velocity = total distance moved / the time taken
-        this.currVelocity = deltaX / ((0, _performanceNow2.default)() - this.startTime);
-        this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
-      }
-    }
-  }, {
-    key: 'handleEnd',
-    value: function handleEnd(x) {
-      if (!this.panning) {
-        return;
-      }
-      this.options.onPanEnd({
-        isSwipe: this.maxVelocity > this.options.swipeVelocity,
-        swipeDirection: this.currVelocity > 0 ? 'left' : 'right'
+    // MOUSE
+    var mouseMoveHandler = function mouseMoveHandler(e) {
+      return _this2.handleMove({
+        e: e, x: e.clientX, y: e.clientY
       });
+    };
+    this.el.addEventListener('mousedown', function (e) {
+      _this2.handleStart({ x: e.clientX, y: e.clientY });
+      _this2.el.addEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
+    }, this.eventOptions);
+    this.el.addEventListener('mouseup', function (e) {
+      _this2.handleEnd();
+      _this2.el.removeEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
+    }, this.eventOptions);
 
-      this.panning = false;
+    // TOUCH
+    var touchMoveHandler = function touchMoveHandler(e) {
+      return _this2.handleMove({
+        e: e,
+        x: e.touches[0].clientX, y: e.touches[0].clientY
+      });
+    };
+    var touchEndHandler = function touchEndHandler(e) {
+      _this2.handleEnd();
+      _this2.el.removeEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
+    };
+    this.el.addEventListener('touchstart', function (e) {
+      _this2.handleStart({
+        x: e.touches[0].clientX, y: e.touches[0].clientY
+      });
+      _this2.el.addEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
+    }, false);
+    this.el.addEventListener('touchend', touchEndHandler, this.eventOptions);
+    this.el.addEventListener('touchcancel', touchEndHandler, this.eventOptions);
+  };
+
+  GestureHelper.prototype.getStartDirection = function getStartDirection(_ref) {
+    var _ref$x = _ref.x,
+        x = _ref$x === undefined ? 0 : _ref$x,
+        _ref$y = _ref.y,
+        y = _ref$y === undefined ? 0 : _ref$y;
+
+    if (this.directionCount < 2) {
+      this.directionCount++;
+      return null;
+    } else {
+      return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
     }
-  }]);
+  };
+
+  GestureHelper.prototype.handleStart = function handleStart(_ref2) {
+    var _ref2$x = _ref2.x,
+        x = _ref2$x === undefined ? 0 : _ref2$x,
+        _ref2$y = _ref2.y,
+        y = _ref2$y === undefined ? 0 : _ref2$y;
+
+
+    // Ensure all settings are reset:
+    this.startX = x;
+    this.startY = y;
+    this.startDirection = null;
+    this.directionCount = 1;
+    this.panning = false;
+    this.startTime = (0, _performanceNow2.default)();
+    this.maxVelocity = this.currVelocity = 0;
+  };
+
+  GestureHelper.prototype.handleMove = function handleMove(_ref3) {
+    var _ref3$e = _ref3.e,
+        e = _ref3$e === undefined ? {} : _ref3$e,
+        _ref3$x = _ref3.x,
+        x = _ref3$x === undefined ? 0 : _ref3$x,
+        _ref3$y = _ref3.y,
+        y = _ref3$y === undefined ? 0 : _ref3$y;
+
+    var deltaX = x - this.startX;
+    var deltaY = y - this.startY;
+
+    if (this.startDirection === null) {
+      this.startDirection = this.getStartDirection({ x: deltaX, y: deltaY });
+    } else if (this.startDirection === 'horizontal' && !this.panning && Math.abs(deltaX) > this.options.sensitivity) {
+
+      this.panning = true;
+      this.options.onPanStart({});
+    }
+
+    if (this.panning) {
+      if (this.eventOptions && this.eventOptions.passive === false) {
+        e.preventDefault();
+      }
+      this.options.onPan({ deltaX: deltaX });
+
+      // velocity = total distance moved / the time taken
+      this.currVelocity = deltaX / ((0, _performanceNow2.default)() - this.startTime);
+      this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
+    }
+  };
+
+  GestureHelper.prototype.handleEnd = function handleEnd(x) {
+    if (!this.panning) {
+      return;
+    }
+    this.options.onPanEnd({
+      isSwipe: this.maxVelocity > this.options.swipeVelocity,
+      swipeDirection: this.currVelocity > 0 ? 'left' : 'right'
+    });
+
+    this.panning = false;
+  };
 
   return GestureHelper;
 }();
@@ -484,3 +482,4 @@ process.umask = function() { return 0; };
 
 /***/ })
 /******/ ]);
+});
