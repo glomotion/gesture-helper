@@ -99,6 +99,9 @@ var GestureHelper = function () {
     this.el = el;
     this.options = Object.assign({}, {
       sensitivity: 5,
+      passive: false,
+      capture: false,
+      allowOppositeDirection: true,
       swipeVelocity: 0.7,
       onPanStart: function onPanStart() {},
       onPan: function onPan() {},
@@ -108,19 +111,30 @@ var GestureHelper = function () {
     this.startDirection = null;
     this.directionCount = 0;
 
-    // Small feature detect for "passive" events
+    // Small feature detect for support of "passive" events
     this.eventOptions = false;
     try {
       var options = Object.defineProperty({}, "passive", {
         get: function get() {
           _this.eventOptions = {
-            passive: false,
-            capture: true
+            passive: !!_this.options.passive,
+            capture: !!_this.options.capture
           };
         }
       });
       this.el.addEventListener("test", null, options);
-    } catch (err) {}
+    } catch (err) {
+      this.eventOptions = {
+        capture: !!this.options.capture
+      };
+    }
+
+    this._touchStart = this.touchStart.bind(this);
+    this._touchEnd = this.touchEnd.bind(this);
+    this._touchMove = this.touchMove.bind(this);
+    this._mouseUp = this.mouseUp.bind(this);
+    this._mouseDown = this.mouseDown.bind(this);
+    this._mouseMove = this.mouseMove.bind(this);
 
     this.setup();
   }
@@ -130,42 +144,53 @@ var GestureHelper = function () {
   };
 
   GestureHelper.prototype.setup = function setup() {
-    var _this2 = this;
+    this.el.addEventListener('mousedown', this._mouseDown, this.eventOptions);
+    this.el.addEventListener('mouseup', this._mouseUp, this.eventOptions);
+    this.el.addEventListener('touchstart', this._touchStart, this.eventOptions);
+    this.el.addEventListener('touchend', this._touchEnd, this.eventOptions);
+    this.el.addEventListener('touchcancel', this._touchEnd, this.eventOptions);
+  };
 
-    // MOUSE
-    var mouseMoveHandler = function mouseMoveHandler(e) {
-      return _this2.handleMove({
-        e: e, x: e.clientX, y: e.clientY
-      });
-    };
-    this.el.addEventListener('mousedown', function (e) {
-      _this2.handleStart({ x: e.clientX, y: e.clientY });
-      _this2.el.addEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
-    }, this.eventOptions);
-    this.el.addEventListener('mouseup', function (e) {
-      _this2.handleEnd();
-      _this2.el.removeEventListener('mousemove', mouseMoveHandler, _this2.eventOptions);
-    }, this.eventOptions);
+  GestureHelper.prototype.mouseMove = function mouseMove(e) {
+    this.handleMove({ e: e, x: e.clientX, y: e.clientY });
+  };
 
-    // TOUCH
-    var touchMoveHandler = function touchMoveHandler(e) {
-      return _this2.handleMove({
-        e: e,
-        x: e.touches[0].clientX, y: e.touches[0].clientY
-      });
-    };
-    var touchEndHandler = function touchEndHandler(e) {
-      _this2.handleEnd();
-      _this2.el.removeEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
-    };
-    this.el.addEventListener('touchstart', function (e) {
-      _this2.handleStart({
-        x: e.touches[0].clientX, y: e.touches[0].clientY
-      });
-      _this2.el.addEventListener('touchmove', touchMoveHandler, _this2.eventOptions);
-    }, false);
-    this.el.addEventListener('touchend', touchEndHandler, this.eventOptions);
-    this.el.addEventListener('touchcancel', touchEndHandler, this.eventOptions);
+  GestureHelper.prototype.touchMove = function touchMove(e) {
+    this.handleMove({ e: e, x: e.touches[0].clientX, y: e.touches[0].clientY });
+  };
+
+  GestureHelper.prototype.touchStart = function touchStart(e) {
+    this.handleStart({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      sourceEvent: e
+    });
+    this.el.addEventListener('touchmove', this._touchMove, this.eventOptions);
+  };
+
+  GestureHelper.prototype.touchEnd = function touchEnd(e) {
+    this.handleEnd(e);
+    this.el.removeEventListener('touchmove', this._touchMove, this.eventOptions);
+  };
+
+  GestureHelper.prototype.mouseDown = function mouseDown(e) {
+    this.handleStart({ x: e.clientX, y: e.clientY, e: e });
+    this.el.addEventListener('mousemove', this._mouseMove, this.eventOptions);
+  };
+
+  GestureHelper.prototype.mouseUp = function mouseUp(e) {
+    this.handleEnd(e);
+    this.el.removeEventListener('mousemove', this._mouseMove, this.eventOptions);
+  };
+
+  GestureHelper.prototype.destroy = function destroy() {
+    this.el.removeEventListener('mousedown', this._mouseDown, this.eventOptions);
+    this.el.removeEventListener('mouseup', this._mouseUp, this.eventOptions);
+    this.el.removeEventListener('mousemove', this._mouseMove, this.eventOptions);
+    this.el.removeEventListener('touchstart', this._touchStart, this.eventOptions);
+    this.el.removeEventListener('touchend', this._touchEnd, this.eventOptions);
+    this.el.removeEventListener('touchcancel', this._touchEnd, this.eventOptions);
+    this.el.removeEventListener('touchmove', this._touchMove, this.eventOptions);
   };
 
   GestureHelper.prototype.getStartDirection = function getStartDirection(_ref) {
@@ -186,7 +211,9 @@ var GestureHelper = function () {
     var _ref2$x = _ref2.x,
         x = _ref2$x === undefined ? 0 : _ref2$x,
         _ref2$y = _ref2.y,
-        y = _ref2$y === undefined ? 0 : _ref2$y;
+        y = _ref2$y === undefined ? 0 : _ref2$y,
+        _ref2$e = _ref2.e,
+        e = _ref2$e === undefined ? {} : _ref2$e;
 
 
     // Ensure all settings are reset:
@@ -215,14 +242,30 @@ var GestureHelper = function () {
     } else if (this.startDirection === 'horizontal' && !this.panning && Math.abs(deltaX) > this.options.sensitivity) {
 
       this.panning = true;
-      this.options.onPanStart({});
+      this.options.onPanStart({
+        sourceEvent: e,
+        startDirection: this.startDirection
+      });
+    }
+
+    // If we're not allowing opposite direction browser default behaviours:
+    if (this.options.allowOppositeDirection === false && this.eventOptions && this.eventOptions.passive === false) {
+
+      e.preventDefault();
     }
 
     if (this.panning) {
-      if (this.eventOptions && this.eventOptions.passive === false) {
+
+      // If allowing opposite direction browser default behaviours:
+      if (this.options.allowOppositeDirection === true && this.eventOptions && this.eventOptions.passive === false) {
+
         e.preventDefault();
       }
-      this.options.onPan({ deltaX: deltaX });
+
+      this.options.onPan({
+        deltaX: deltaX,
+        sourceEvent: e
+      });
 
       // velocity = total distance moved / the time taken
       this.currVelocity = deltaX / ((0, _performanceNow2.default)() - this.startTime);
@@ -230,13 +273,12 @@ var GestureHelper = function () {
     }
   };
 
-  GestureHelper.prototype.handleEnd = function handleEnd(x) {
-    if (!this.panning) {
-      return;
-    }
+  GestureHelper.prototype.handleEnd = function handleEnd(e) {
+    if (!this.panning) return;
     this.options.onPanEnd({
       isSwipe: this.maxVelocity > this.options.swipeVelocity,
-      swipeDirection: this.currVelocity > 0 ? 'left' : 'right'
+      swipeDirection: this.currVelocity > 0 ? 'left' : 'right',
+      sourceEvent: e
     });
 
     this.panning = false;
