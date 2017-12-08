@@ -124,10 +124,13 @@ var GestureHelper = function () {
       });
       this.el.addEventListener("test", null, options);
     } catch (err) {
+      console.err(err);
       this.eventOptions = {
         capture: !!this.options.capture
       };
     }
+
+    console.log(this.eventOptions);
 
     this._touchStart = this.touchStart.bind(this);
     this._touchEnd = this.touchEnd.bind(this);
@@ -215,6 +218,12 @@ var GestureHelper = function () {
         _ref2$e = _ref2.e,
         e = _ref2$e === undefined ? {} : _ref2$e;
 
+
+    // If we're not allowing opposite direction browser default behaviours:
+    if (this.options.allowOppositeDirection === false && this.eventOptions && this.eventOptions.passive === false) {
+
+      e.preventDefault();
+    }
 
     // Ensure all settings are reset:
     this.startX = x;
