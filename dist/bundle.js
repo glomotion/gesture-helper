@@ -130,8 +130,6 @@ var GestureHelper = function () {
       };
     }
 
-    console.log(this.eventOptions);
-
     this._touchStart = this.touchStart.bind(this);
     this._touchEnd = this.touchEnd.bind(this);
     this._touchMove = this.touchMove.bind(this);
@@ -166,7 +164,7 @@ var GestureHelper = function () {
     this.handleStart({
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
-      sourceEvent: e
+      e: e
     });
     this.el.addEventListener('touchmove', this._touchMove, this.eventOptions);
   };
