@@ -38,13 +38,6 @@ export default class GestureHelper {
       };
     }
 
-    this._touchStart = this.touchStart.bind(this);
-    this._touchEnd = this.touchEnd.bind(this);
-    this._touchMove = this.touchMove.bind(this);
-    this._mouseUp = this.mouseUp.bind(this);
-    this._mouseDown = this.mouseDown.bind(this);
-    this._mouseMove = this.mouseMove.bind(this);
-
     this.setup();
   }
 
@@ -53,53 +46,53 @@ export default class GestureHelper {
   }
 
   setup() {
-    this.el.addEventListener('mousedown', this._mouseDown, this.eventOptions);
-    this.el.addEventListener('mouseup', this._mouseUp, this.eventOptions);    
-    this.el.addEventListener('touchstart', this._touchStart, this.eventOptions);
-    this.el.addEventListener('touchend', this._touchEnd, this.eventOptions);
-    this.el.addEventListener('touchcancel', this._touchEnd, this.eventOptions);
+    this.el.addEventListener('mousedown', this.mouseDown, this.eventOptions);
+    this.el.addEventListener('mouseup', this.mouseUp, this.eventOptions);    
+    this.el.addEventListener('touchstart', this.touchStart, this.eventOptions);
+    this.el.addEventListener('touchend', this.touchEnd, this.eventOptions);
+    this.el.addEventListener('touchcancel', this.touchEnd, this.eventOptions);
   }
 
-  mouseMove(e) {
+  mouseMove = (e) => {
     this.handleMove({ e: e, x: e.clientX, y: e.clientY });
   }
 
-  touchMove(e) {
+  touchMove = (e) => {
     this.handleMove({ e: e, x: e.touches[0].clientX, y: e.touches[0].clientY });
   }
 
-  touchStart(e) {
+  touchStart = (e) => {
     this.handleStart({
       x: e.touches[0].clientX, 
       y: e.touches[0].clientY,
       e: e
     });
-    this.el.addEventListener('touchmove', this._touchMove, this.eventOptions);
+    this.el.addEventListener('touchmove', this.touchMove, this.eventOptions);
   }
   
-  touchEnd(e) {
+  touchEnd = (e) => {
     this.handleEnd(e);
-    this.el.removeEventListener('touchmove', this._touchMove, this.eventOptions);
+    this.el.removeEventListener('touchmove', this.touchMove, this.eventOptions);
   }
 
-  mouseDown(e) {
+  mouseDown = (e) => {
     this.handleStart({ x: e.clientX, y: e.clientY, e: e });
-    this.el.addEventListener('mousemove', this._mouseMove, this.eventOptions);
+    this.el.addEventListener('mousemove', this.mouseMove, this.eventOptions);
   }
 
-  mouseUp(e) {
+  mouseUp = (e) => {
     this.handleEnd(e);
-    this.el.removeEventListener('mousemove', this._mouseMove, this.eventOptions);
+    this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
   }
 
   destroy() {
-    this.el.removeEventListener('mousedown', this._mouseDown, this.eventOptions);
-    this.el.removeEventListener('mouseup', this._mouseUp, this.eventOptions);    
-    this.el.removeEventListener('mousemove', this._mouseMove, this.eventOptions);
-    this.el.removeEventListener('touchstart', this._touchStart, this.eventOptions);
-    this.el.removeEventListener('touchend', this._touchEnd, this.eventOptions);
-    this.el.removeEventListener('touchcancel', this._touchEnd, this.eventOptions);
-    this.el.removeEventListener('touchmove', this._touchMove, this.eventOptions);
+    this.el.removeEventListener('mousedown', this.mouseDown, this.eventOptions);
+    this.el.removeEventListener('mouseup', this.mouseUp, this.eventOptions);    
+    this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
+    this.el.removeEventListener('touchstart', this.touchStart, this.eventOptions);
+    this.el.removeEventListener('touchend', this.touchEnd, this.eventOptions);
+    this.el.removeEventListener('touchcancel', this.touchEnd, this.eventOptions);
+    this.el.removeEventListener('touchmove', this.touchMove, this.eventOptions);
   }
 
   getStartDirection({x=0,y=0}) {
@@ -177,7 +170,7 @@ export default class GestureHelper {
     }
   }
 
-  handleEnd(e) {
+  handleEnd = (e) => {
     if (!this.panning) return;
     this.options.onPanEnd({
       isSwipe: this.maxVelocity > this.options.swipeVelocity,

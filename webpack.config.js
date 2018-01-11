@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/gesture-helper.js',
   output: {
     path: require('path').resolve('./dist/'),
-    filename: 'bundle.js',
+    filename: 'index.js',
     publicPath: '/',
     library: 'gesture-helper',
     libraryTarget: 'umd',
@@ -31,6 +31,9 @@ module.exports = {
           presets: [
             ['es2015', { loose: true }],
           ],
+          plugins: [
+            'transform-class-properties',
+          ]
         }
       }
     ]
