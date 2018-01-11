@@ -105,14 +105,6 @@ export default class GestureHelper {
   }
 
   handleStart({x=0,y=0,e={}}) {
-    
-    // If we're not allowing opposite direction browser default behaviours:
-    if (this.options.allowOppositeDirection === false
-      && this.eventOptions
-      && this.eventOptions.passive === false) {
-    
-      e.preventDefault();
-    }
 
     // Ensure all settings are reset:
     this.startX = x;
