@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("gesture-helper", [], factory);
+		define("GestureHelper", [], factory);
 	else if(typeof exports === 'object')
-		exports["gesture-helper"] = factory();
+		exports["GestureHelper"] = factory();
 	else
-		root["gesture-helper"] = factory();
+		root["GestureHelper"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -517,5 +517,5 @@ process.umask = function() { return 0; };
 
 
 /***/ })
-/******/ ]);
+/******/ ])["default"];
 });

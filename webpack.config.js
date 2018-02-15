@@ -8,9 +8,10 @@ module.exports = {
     path: require('path').resolve('./dist/'),
     filename: 'index.js',
     publicPath: '/',
-    library: 'gesture-helper',
+    library: 'GestureHelper',
     libraryTarget: 'umd',
-    umdNamedDefine: true
+    libraryExport: 'default',
+    umdNamedDefine: true,
   },
   resolve: {
     modules: [

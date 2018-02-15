@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>demo buildout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <style>
+      *,*:before,*:after {
+        box-sizing: border-box;
+      }
+
+      html,body {
+        margin: 0;
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        background: #f1f1f1;
+        border: 30px solid white;
+      }
+
+      #output {
+        width: 80%;
+        max-width: 500px;
+        margin: auto;
+        font-size: 36px;
+        text-align: center;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <pre id='output'>click &amp; drag horizontally ...</pre>
+
+    <script type="text/javascript" src="../dist/index.js"></script>
+    <script type="text/javascript">
+      const demoOutput = document.getElementById('output');
+      let gestureControl = new GestureHelper(document.body, {
+        passive: false,
+        capture: true,
+        allowOppositeDirection: false,
+        onPanStart: (e) => {
+          console.log(e);
+          // e.sourceEvent.preventDefault();
+          demoOutput.innerHTML = JSON.stringify(e);
+        },
+        onPan: (e) => {
+          console.log(e);
+          // e.sourceEvent.preventDefault();
+          demoOutput.innerHTML = JSON.stringify(e);
+        },
+        onPanEnd: (e) => {
+          // e.sourceEvent.preventDefault();
+          demoOutput.innerHTML = JSON.stringify(e);
+          setTimeout(() => {
+            demoOutput.innerHTML = `click &amp; drag horizontally ...`;
+          }, 1000);
+        },
+      });
+    </script>
+  </body>
+</html>
