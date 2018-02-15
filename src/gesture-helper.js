@@ -1,20 +1,19 @@
 'use strict';
 
+import EventEmitter from 'events';
 import perfNow from 'performance-now';
 
-export default class GestureHelper {
-  constructor(el, options) {
-    this.el = el;
+export default class GestureHelper extends EventEmitter {
+  constructor(...props) {
+    super(...props);
+    this.el = props[0];
     this.options = Object.assign({}, {
       sensitivity: 5,
       passive: false,
       capture: false,
-      allowOppositeDirection: true,
       swipeVelocity: 0.7,
-      onPanStart: () => {},
-      onPan: () => {},
-      onPanEnd: () => {}
-    }, options);
+    }, props[1] || {});
+
     this.panning = false;
     this.startDirection = null;
     this.directionCount = 0;
@@ -32,7 +31,7 @@ export default class GestureHelper {
       });
       this.el.addEventListener("test", null, options);
     } catch(err) {
-      console.err(err);
+      console.error(err);
       this.eventOptions = {
         capture: !! this.options.capture
       };
@@ -47,7 +46,7 @@ export default class GestureHelper {
 
   setup() {
     this.el.addEventListener('mousedown', this.mouseDown, this.eventOptions);
-    this.el.addEventListener('mouseup', this.mouseUp, this.eventOptions);    
+    this.el.addEventListener('mouseup', this.mouseUp, this.eventOptions);
     this.el.addEventListener('touchstart', this.touchStart, this.eventOptions);
     this.el.addEventListener('touchend', this.touchEnd, this.eventOptions);
     this.el.addEventListener('touchcancel', this.touchEnd, this.eventOptions);
@@ -63,13 +62,13 @@ export default class GestureHelper {
 
   touchStart = (e) => {
     this.handleStart({
-      x: e.touches[0].clientX, 
+      x: e.touches[0].clientX,
       y: e.touches[0].clientY,
       e: e
     });
     this.el.addEventListener('touchmove', this.touchMove, this.eventOptions);
   }
-  
+
   touchEnd = (e) => {
     this.handleEnd(e);
     this.el.removeEventListener('touchmove', this.touchMove, this.eventOptions);
@@ -87,7 +86,7 @@ export default class GestureHelper {
 
   destroy() {
     this.el.removeEventListener('mousedown', this.mouseDown, this.eventOptions);
-    this.el.removeEventListener('mouseup', this.mouseUp, this.eventOptions);    
+    this.el.removeEventListener('mouseup', this.mouseUp, this.eventOptions);
     this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
     this.el.removeEventListener('touchstart', this.touchStart, this.eventOptions);
     this.el.removeEventListener('touchend', this.touchEnd, this.eventOptions);
@@ -127,33 +126,16 @@ export default class GestureHelper {
       && Math.abs(deltaX) > this.options.sensitivity) {
 
       this.panning = true;
-      this.options.onPanStart({
+      this.emit('pan-start', {
         sourceEvent: e,
         startDirection: this.startDirection
       });
     }
 
-    // If we're not allowing opposite direction browser default behaviours:
-    if (this.options.allowOppositeDirection === false
-      && this.eventOptions
-      && this.eventOptions.passive === false) {
-    
-      e.preventDefault();
-    }
-
     if (this.panning) {
-
-      // If allowing opposite direction browser default behaviours:
-      if (this.options.allowOppositeDirection === true
-        && this.eventOptions
-        && this.eventOptions.passive === false) {
-      
-        e.preventDefault();
-      }
-      
-      this.options.onPan({ 
+      this.emit('pan', {
         deltaX,
-        sourceEvent: e 
+        sourceEvent: e
       });
 
       // velocity = total distance moved / the time taken
@@ -164,7 +146,7 @@ export default class GestureHelper {
 
   handleEnd = (e) => {
     if (!this.panning) return;
-    this.options.onPanEnd({
+    this.emit('pan-end', {
       isSwipe: this.maxVelocity > this.options.swipeVelocity,
       swipeDirection: (this.currVelocity > 0) ? 'left' : 'right',
       sourceEvent: e

@@ -167,7 +167,7 @@ var GestureHelper = function () {
       });
       this.el.addEventListener("test", null, options);
     } catch (err) {
-      console.err(err);
+      console.error(err);
       this.eventOptions = {
         capture: !!this.options.capture
       };
