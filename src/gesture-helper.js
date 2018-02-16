@@ -3,6 +3,10 @@
 import EventEmitter from 'events';
 import perfNow from 'performance-now';
 
+// @TODO: temp polyfill code, should tidy this a bit..
+import InputDeviceCapabilitiesPolyfill from './inputdevicecapabilities-polyfill.js';
+InputDeviceCapabilitiesPolyfill(window);
+
 export default class GestureHelper extends EventEmitter {
   constructor(...props) {
     super(...props);
@@ -83,11 +87,13 @@ export default class GestureHelper extends EventEmitter {
   }
 
   mouseDown = (e) => {
+    if (e.sourceCapabilities.firesTouchEvents) return;
     this.handleStart({ x: e.clientX, y: e.clientY, e: e });
     this.el.addEventListener('mousemove', this.mouseMove, this.eventOptions);
   }
 
   mouseUp = (e) => {
+    if (e.sourceCapabilities.firesTouchEvents) return;
     this.handleEnd(e);
     this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
   }
@@ -112,7 +118,6 @@ export default class GestureHelper extends EventEmitter {
   }
 
   handleStart({x=0,y=0,e={}}) {
-    console.log('handle start!', e);
 
     // Ensure all settings are reset:
     this.startX = x;
@@ -168,7 +173,7 @@ export default class GestureHelper extends EventEmitter {
   }
 
   handleEnd = (e) => {
-    console.log('handleEnd', e);
+    // console.log('handleEnd', e);
     if (this.panning) {
       this.panning = false;
       let isSwipe = false;
