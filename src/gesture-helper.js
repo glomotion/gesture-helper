@@ -17,6 +17,7 @@ export default class GestureHelper extends EventEmitter {
     this.panning = false;
     this.startDirection = null;
     this.directionCount = 0;
+    this.clearVelocityStats();
 
     // Small feature detect for support of "passive" events
     this.eventOptions = false;
@@ -38,6 +39,13 @@ export default class GestureHelper extends EventEmitter {
     }
 
     this.setup();
+  }
+
+  clearVelocityStats() {
+    this.velocity = {
+      current: { x: 0, y: 0 },
+      max: { x: 0, y: 0 },
+    };
   }
 
   isPanning() {
@@ -104,6 +112,7 @@ export default class GestureHelper extends EventEmitter {
   }
 
   handleStart({x=0,y=0,e={}}) {
+    console.log('handle start!', e);
 
     // Ensure all settings are reset:
     this.startX = x;
@@ -112,46 +121,74 @@ export default class GestureHelper extends EventEmitter {
     this.directionCount = 1;
     this.panning = false;
     this.startTime = perfNow();
-    this.maxVelocity = this.currVelocity = 0;
+    this.clearVelocityStats();
   }
 
   handleMove({e={},x=0,y=0}) {
-    let deltaX = x - this.startX;
-    let deltaY = y - this.startY;
+    const deltaX = x - this.startX;
+    const deltaY = y - this.startY;
 
     if (this.startDirection === null) {
       this.startDirection = this.getStartDirection({ x:deltaX, y:deltaY });
-    } else if (this.startDirection === 'horizontal'
-      && !this.panning
-      && Math.abs(deltaX) > this.options.sensitivity) {
+    } else if (!this.panning
+      && (Math.abs(deltaX) > this.options.sensitivity
+        || Math.abs(deltaY) > this.options.sensitivity)) {
 
       this.panning = true;
       this.emit('pan-start', {
         sourceEvent: e,
         startDirection: this.startDirection
       });
-    }
-
-    if (this.panning) {
+    } else if (this.panning) {
       this.emit('pan', {
-        deltaX,
+        startDirection: this.startDirection,
+        deltaX, deltaY,
         sourceEvent: e
       });
 
+      if (this.startDirection === 'horizontal') {
+        deltaX < 0
+          ? this.emit('pan-left', { delta: Math.abs(deltaX), sourceEvent: e })
+          : this.emit('pan-right', { delta: Math.abs(deltaX), sourceEvent: e });
+      }
+
+      if (this.startDirection === 'vertical') {
+        deltaY < 0
+          ? this.emit('pan-up', { delta: Math.abs(deltaY), sourceEvent: e })
+          : this.emit('pan-down', { delta: Math.abs(deltaY), sourceEvent: e });
+      }
+
       // velocity = total distance moved / the time taken
-      this.currVelocity = deltaX / (perfNow() - this.startTime);
-      this.maxVelocity = Math.max(this.maxVelocity, Math.abs(this.currVelocity));
+      const deltaTime = perfNow() - this.startTime;
+      this.velocity.current.x = deltaX / deltaTime;
+      this.velocity.current.y = deltaY / deltaTime;
+      this.velocity.max.x = Math.max(this.velocity.max.x, Math.abs(this.velocity.current.x));
+      this.velocity.max.y = Math.max(this.velocity.max.y, Math.abs(this.velocity.current.y));
     }
   }
 
   handleEnd = (e) => {
-    if (!this.panning) return;
-    this.emit('pan-end', {
-      isSwipe: this.maxVelocity > this.options.swipeVelocity,
-      swipeDirection: (this.currVelocity > 0) ? 'left' : 'right',
-      sourceEvent: e
-    });
+    console.log('handleEnd', e);
+    if (this.panning) {
+      this.panning = false;
+      let isSwipe = false;
+      let swipeDirection = undefined;
+      if (this.velocity.max.x > this.options.swipeVelocity
+        && this.startDirection === 'horizontal') {
 
-    this.panning = false;
+        isSwipe = true;
+        swipeDirection = this.velocity.current.x > 0 ? 'right' : 'left';
+      } else if (this.velocity.max.y > this.options.swipeVelocity
+        && this.startDirection === 'vertical') {
+
+        isSwipe = true;
+        swipeDirection = this.velocity.current.y > 0 ? 'down' : 'up';
+      }
+      this.emit('pan-end', { isSwipe, swipeDirection, sourceEvent: e });
+    } else {
+      this.emit('tap', { srcEvent: e.sourceEvent });
+    }
+
+    return;
   }
 }
