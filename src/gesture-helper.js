@@ -9,13 +9,15 @@ InputDeviceCapabilitiesPolyfill(window);
 
 export default class GestureHelper extends EventEmitter {
   constructor(...props) {
-    super(...props);
+    super();
     this.el = props[0];
     this.options = Object.assign({}, {
       sensitivity: 5,
       passive: false,
       capture: false,
       swipeVelocity: 0.7,
+      maxTapDuration: 300,
+      longTapDuration: 400,
     }, props[1] || {});
 
     this.panning = false;
@@ -174,6 +176,7 @@ export default class GestureHelper extends EventEmitter {
 
   handleEnd = (e) => {
     // console.log('handleEnd', e);
+    const deltaTime = perfNow() - this.startTime;
     if (this.panning) {
       this.panning = false;
       let isSwipe = false;
@@ -190,8 +193,10 @@ export default class GestureHelper extends EventEmitter {
         swipeDirection = this.velocity.current.y > 0 ? 'down' : 'up';
       }
       this.emit('pan-end', { isSwipe, swipeDirection, sourceEvent: e });
-    } else {
-      this.emit('tap', { srcEvent: e.sourceEvent });
+    // } else if (deltaTime >= this.options.longTapDuration) {
+    //   this.emit('long-tap', { srcEvent: e });
+    } else if (deltaTime <= this.options.maxTapDuration) {
+      this.emit('tap', { srcEvent: e });
     }
 
     return;

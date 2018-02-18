@@ -5,6 +5,8 @@ const gestureCtrl = new GestureHelper(document.body, {
   passive: false,
   capture: true,
   blockOppositeScroll: false,
+  maxTapDuration: 300,
+  sensitivity: 5,
 });
 
 gestureCtrl.on('pan-start', handleStart);
@@ -13,13 +15,18 @@ function handleStart(e) {
   console.log('on pan-start', e);
   e.sourceEvent.preventDefault();
   demoOutput.innerHTML = JSON.stringify(e);
-  // setTimeout(function() {
-  //   gestureCtrl.removeListener('pan-start', handleStart);
-  // }, 1000);
 }
+
+gestureCtrl.on('long-tap', (e) => {
+  console.log('long tap!');
+  demoOutput.innerHTML = JSON.stringify(e);
+  clear();
+});
 
 gestureCtrl.on('tap', (e) => {
   console.log('tap!');
+  demoOutput.innerHTML = JSON.stringify(e);
+  clear();
 });
 
 gestureCtrl.on('pan', (e) => {
@@ -48,7 +55,9 @@ gestureCtrl.on('pan-end', (e) => {
   e.sourceEvent.preventDefault();
   console.log('on pan-end', e);
   demoOutput.innerHTML = JSON.stringify(e);
-  setTimeout(() => {
-    demoOutput.innerHTML = `click &amp; drag horizontally ...`;
-  }, 1000);
+  clear();
 });
+
+const clear = () => setTimeout(() => {
+  demoOutput.innerHTML = `click &amp; drag horizontally ...`;
+}, 1000);
