@@ -17,12 +17,6 @@ function handleStart(e) {
   demoOutput.innerHTML = JSON.stringify(e);
 }
 
-gestureCtrl.on('long-tap', (e) => {
-  console.log('long tap!');
-  demoOutput.innerHTML = JSON.stringify(e);
-  clear();
-});
-
 gestureCtrl.on('tap', (e) => {
   console.log('tap!');
   demoOutput.innerHTML = JSON.stringify(e);
