@@ -9,49 +9,34 @@ const gestureCtrl = new GestureHelper(document.body, {
   sensitivity: 5,
 });
 
-gestureCtrl.on('pan-start', handleStart);
-
-function handleStart(e) {
-  console.log('on pan-start', e);
-  e.sourceEvent.preventDefault();
-  demoOutput.innerHTML = JSON.stringify(e);
-}
-
 gestureCtrl.on('tap', (e) => {
   console.log('tap!');
   demoOutput.innerHTML = JSON.stringify(e);
   clear();
 });
 
-gestureCtrl.on('pan', (e) => {
-  console.log('pan', e);
-  e.sourceEvent.preventDefault();
-  demoOutput.innerHTML = JSON.stringify(e);
-});
+// gestureCtrl.on('pan.all', handleAll);
+gestureCtrl.on('pan.**', handler);
+// gestureCtrl.on('pan.y.**', handler);
 
-gestureCtrl.on('pan-left', (e) => {
-  console.log('pan-left', e);
-});
+// gestureCtrl.on('pan.start', function(ev) {
+//   console.log('pan.start', ev);
+// });
 
-gestureCtrl.on('pan-right', (e) => {
-  console.log('pan-right', e);
-});
+// gestureCtrl.on('pan.end', function(ev) {
+//   console.log('pan.end', ev);
+// });
 
-gestureCtrl.on('pan-up', (e) => {
-  console.log('pan-up', e);
-});
+function handleAll(ev) {
+  console.log('pan.all', ev);
+}
 
-gestureCtrl.on('pan-down', (e) => {
-  console.log('pan-down', e);
-});
-
-gestureCtrl.on('pan-end', (e) => {
-  e.sourceEvent.preventDefault();
-  console.log('on pan-end', e);
-  demoOutput.innerHTML = JSON.stringify(e);
-  clear();
-});
+function handler(ev) {
+  console.log(this.event, ev);
+}
 
 const clear = () => setTimeout(() => {
   demoOutput.innerHTML = `click &amp; drag horizontally ...`;
+  // gestureCtrl.off('pan.x.**', handler);
+  // gestureCtrl.off('pan.both', handleBoth);
 }, 1000);

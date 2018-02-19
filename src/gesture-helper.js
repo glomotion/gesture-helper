@@ -1,15 +1,18 @@
 'use strict';
 
-import EventEmitter from 'events';
+import EventEmitter2 from 'eventemitter2';
 import perfNow from 'performance-now';
 
 // @TODO: temp polyfill code, should tidy this a bit..
 import InputDeviceCapabilitiesPolyfill from './inputdevicecapabilities-polyfill.js';
 InputDeviceCapabilitiesPolyfill(window);
 
-export default class GestureHelper extends EventEmitter {
+export default class GestureHelper extends EventEmitter2 {
   constructor(...props) {
-    super();
+    super({
+      wildcard: true,
+    });
+
     this.el = props[0];
     this.options = Object.assign({}, {
       sensitivity: 5,
@@ -142,12 +145,12 @@ export default class GestureHelper extends EventEmitter {
         || Math.abs(deltaY) > this.options.sensitivity)) {
 
       this.panning = true;
-      this.emit('pan-start', {
+      this.emit('pan.start', {
         sourceEvent: e,
         startDirection: this.startDirection
       });
     } else if (this.panning) {
-      this.emit('pan', {
+      this.emit('pan.all', {
         startDirection: this.startDirection,
         deltaX, deltaY,
         sourceEvent: e
@@ -155,14 +158,14 @@ export default class GestureHelper extends EventEmitter {
 
       if (this.startDirection === 'horizontal') {
         deltaX < 0
-          ? this.emit('pan-left', { delta: Math.abs(deltaX), sourceEvent: e })
-          : this.emit('pan-right', { delta: Math.abs(deltaX), sourceEvent: e });
+          ? this.emit('pan.x.left', { delta: Math.abs(deltaX), sourceEvent: e })
+          : this.emit('pan.x.right', { delta: Math.abs(deltaX), sourceEvent: e });
       }
 
       if (this.startDirection === 'vertical') {
         deltaY < 0
-          ? this.emit('pan-up', { delta: Math.abs(deltaY), sourceEvent: e })
-          : this.emit('pan-down', { delta: Math.abs(deltaY), sourceEvent: e });
+          ? this.emit('pan.y.up', { delta: Math.abs(deltaY), sourceEvent: e })
+          : this.emit('pan.y.down', { delta: Math.abs(deltaY), sourceEvent: e });
       }
 
       // velocity = total distance moved / the time taken
@@ -175,12 +178,11 @@ export default class GestureHelper extends EventEmitter {
   }
 
   handleEnd = (e) => {
-    // console.log('handleEnd', e);
     const deltaTime = perfNow() - this.startTime;
     if (this.panning) {
       this.panning = false;
       let isSwipe = false;
-      let swipeDirection = undefined;
+      let swipeDirection = null;
       if (this.velocity.max.x > this.options.swipeVelocity
         && this.startDirection === 'horizontal') {
 
@@ -192,9 +194,7 @@ export default class GestureHelper extends EventEmitter {
         isSwipe = true;
         swipeDirection = this.velocity.current.y > 0 ? 'down' : 'up';
       }
-      this.emit('pan-end', { isSwipe, swipeDirection, sourceEvent: e });
-    // } else if (deltaTime >= this.options.longTapDuration) {
-    //   this.emit('long-tap', { srcEvent: e });
+      this.emit('pan.end', { isSwipe, swipeDirection, sourceEvent: e });
     } else if (deltaTime <= this.options.maxTapDuration) {
       this.emit('tap', { srcEvent: e });
     }
