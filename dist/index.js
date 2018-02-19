@@ -485,7 +485,7 @@ var GestureHelper = function (_EventEmitter) {
         startDirection: this.startDirection
       });
     } else if (this.panning) {
-      this.emit('pan.both', {
+      this.emit('pan.all', {
         startDirection: this.startDirection,
         deltaX: deltaX, deltaY: deltaY,
         sourceEvent: e

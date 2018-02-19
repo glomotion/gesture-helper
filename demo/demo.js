@@ -15,8 +15,8 @@ gestureCtrl.on('tap', (e) => {
   clear();
 });
 
-// gestureCtrl.on('pan.all', handleAll);
-gestureCtrl.on('pan.**', handler);
+gestureCtrl.on('pan.all', handleAll);
+// gestureCtrl.on('pan.**', handler);
 // gestureCtrl.on('pan.y.**', handler);
 
 // gestureCtrl.on('pan.start', function(ev) {
