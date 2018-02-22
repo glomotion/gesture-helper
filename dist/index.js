@@ -492,11 +492,11 @@ var GestureHelper = function (_EventEmitter) {
       });
 
       if (this.startDirection === 'horizontal') {
-        deltaX < 0 ? this.emit('pan.x.left', { delta: Math.abs(deltaX), sourceEvent: e }) : this.emit('pan.x.right', { delta: Math.abs(deltaX), sourceEvent: e });
+        deltaX < 0 ? this.emit('pan.x.left', { delta: deltaX, sourceEvent: e }) : this.emit('pan.x.right', { delta: deltaX, sourceEvent: e });
       }
 
       if (this.startDirection === 'vertical') {
-        deltaY < 0 ? this.emit('pan.y.up', { delta: Math.abs(deltaY), sourceEvent: e }) : this.emit('pan.y.down', { delta: Math.abs(deltaY), sourceEvent: e });
+        deltaY < 0 ? this.emit('pan.y.up', { delta: deltaY, sourceEvent: e }) : this.emit('pan.y.down', { delta: deltaY, sourceEvent: e });
       }
 
       // velocity = total distance moved / the time taken
