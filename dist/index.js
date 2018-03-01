@@ -371,7 +371,8 @@ var GestureHelper = function (_EventEmitter) {
       capture: false,
       swipeVelocity: 0.7,
       maxTapDuration: 300,
-      longTapDuration: 400
+      longTapDuration: 400,
+      startDirectionLoopCount: 2
     }, (arguments.length <= 1 ? undefined : arguments[1]) || {});
 
     _this.panning = false;
@@ -437,7 +438,7 @@ var GestureHelper = function (_EventEmitter) {
         _ref$y = _ref.y,
         y = _ref$y === undefined ? 0 : _ref$y;
 
-    if (this.directionCount < 2) {
+    if (this.directionCount < this.options.startDirectionLoopCount) {
       this.directionCount++;
       return null;
     } else {
@@ -481,10 +482,12 @@ var GestureHelper = function (_EventEmitter) {
 
       this.panning = true;
       this.emit('pan.start', {
-        sourceEvent: e,
-        startDirection: this.startDirection
+        startDirection: this.startDirection,
+        sourceEvent: e
       });
-    } else if (this.panning) {
+    }
+
+    if (this.panning) {
       this.emit('pan.all', {
         startDirection: this.startDirection,
         deltaX: deltaX, deltaY: deltaY,

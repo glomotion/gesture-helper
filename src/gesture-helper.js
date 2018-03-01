@@ -21,6 +21,7 @@ export default class GestureHelper extends EventEmitter2 {
       swipeVelocity: 0.7,
       maxTapDuration: 300,
       longTapDuration: 400,
+      startDirectionLoopCount: 2,
     }, props[1] || {});
 
     this.panning = false;
@@ -114,7 +115,7 @@ export default class GestureHelper extends EventEmitter2 {
   }
 
   getStartDirection({x=0,y=0}) {
-    if (this.directionCount < 2) {
+    if (this.directionCount < this.options.startDirectionLoopCount) {
       this.directionCount++;
       return null;
     } else {
@@ -140,16 +141,17 @@ export default class GestureHelper extends EventEmitter2 {
 
     if (this.startDirection === null) {
       this.startDirection = this.getStartDirection({ x:deltaX, y:deltaY });
-    } else if (!this.panning
-      && (Math.abs(deltaX) > this.options.sensitivity
-        || Math.abs(deltaY) > this.options.sensitivity)) {
+    } else if (!this.panning && (Math.abs(deltaX) > this.options.sensitivity
+      || Math.abs(deltaY) > this.options.sensitivity)) {
 
       this.panning = true;
       this.emit('pan.start', {
-        sourceEvent: e,
-        startDirection: this.startDirection
+        startDirection: this.startDirection,
+        sourceEvent: e
       });
-    } else if (this.panning) {
+    }
+
+    if (this.panning) {
       this.emit('pan.all', {
         startDirection: this.startDirection,
         deltaX, deltaY,
