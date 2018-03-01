@@ -22,7 +22,7 @@ In the interest of keeping the library small, versatile and uncomplicated, all s
 { ..., sourceEvent: e }
 ```
 
-This allows you to add preventDefault() and other native event functionality as you need it.
+This allows you to add preventDefault() and other native event functionality, as you need it.
 
 Per EE2, the event handler name (eg. ```pan.x.up```, ```pan.all```) is also returned to the listener function's scope as the property ```this.event```.
 *Note: If you plan to access this property, please avoid defining handlers using arrow functions.
