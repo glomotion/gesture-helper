@@ -44,6 +44,13 @@ gestureCtrl.on('pan.all', function(e) {
 });
 ```
 
+**demo:**
+To see this component in action, run:
+```
+yarn demo
+```
+
+
 # optional settings (with default value):
 ```javascript
   passive: false,
