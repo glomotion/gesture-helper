@@ -15,11 +15,16 @@ pan.x.left
 pan.x.right
 pan.x.**
 ```
-In the interest of keeping the library small, versatile and uncomplicated, all source touch/mouse events are returned inside EE2 event payloads ```javascript { sourceEvent: e }```.
+In the interest of keeping the library small, versatile and uncomplicated, all source touch/mouse events are returned inside EE2 event payloads, as follows:
+```javascript
+{ ..., sourceEvent: e }
+```.
 This allows you to add preventDefault() and other native event functionality as you need it.
 
 # install:
-```bash yarn install gesture-helper```
+```bash
+yarn install gesture-helper
+```
 
 **then:**
 ```javascript
