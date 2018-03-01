@@ -16,13 +16,11 @@ pan.x.right
 pan.x.**
 ```
 
-In the interest of keeping the library small, versatile and uncomplicated, all source touch/mouse events are returned inside EE2 event payloads, as follows:
-
+In the interest of keeping the library small, versatile and uncomplicated - all source touch/mouse events are returned inside EE2 event payloads, as follows:
 ```javascript
 { ..., sourceEvent: e }
 ```
-
-This allows you to add preventDefault() and other native event functionality, as you need it.
+This allows you to add ```preventDefault()``` and other native event functionality, as you need it.
 
 Per EE2, the event handler name (eg. ```pan.x.up```, ```pan.all```) is also returned to the listener function's scope as the property ```this.event```.
 *Note: If you plan to access this property, please avoid defining handlers using arrow functions.
@@ -44,8 +42,8 @@ gestureCtrl.on('pan.all', function(e) {
 });
 ```
 
-**demo:**
-To see this component in action, run:
+# demo:
+to see this component in action, run:
 ```
 yarn demo
 ```
