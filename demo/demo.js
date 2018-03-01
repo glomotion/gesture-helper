@@ -2,11 +2,12 @@ import GestureHelper from '../src/gesture-helper.js';
 
 const demoOutput = document.getElementById('output');
 const gestureCtrl = new GestureHelper(document.body, {
-  passive: false,
-  capture: true,
-  blockOppositeScroll: false,
-  maxTapDuration: 300,
   sensitivity: 5,
+  passive: false,
+  capture: false,
+  swipeVelocity: 0.7,
+  maxTapDuration: 300,
+  // longTapDuration: 500, // coming soon
 });
 
 gestureCtrl.on('tap', (e) => {
@@ -15,24 +16,28 @@ gestureCtrl.on('tap', (e) => {
   clear();
 });
 
-gestureCtrl.on('pan.all', handleAll);
-// gestureCtrl.on('pan.**', handler);
+// gestureCtrl.on('pan.all', handleAll);
+gestureCtrl.on('pan', handler);
 // gestureCtrl.on('pan.y.**', handler);
 
 // gestureCtrl.on('pan.start', function(ev) {
 //   console.log('pan.start', ev);
 // });
 
-// gestureCtrl.on('pan.end', function(ev) {
-//   console.log('pan.end', ev);
-// });
+gestureCtrl.on('pan.end', function(ev) {
+  console.log('pan.end', ev);
+  demoOutput.innerHTML = JSON.stringify(ev);
+  clear();
+});
 
 function handleAll(ev) {
-  console.log('pan.all', ev);
+  console.log(this.event, ev);
+  demoOutput.innerHTML = JSON.stringify(ev);
 }
 
 function handler(ev) {
   console.log(this.event, ev);
+  demoOutput.innerHTML = JSON.stringify(ev);
 }
 
 const clear = () => setTimeout(() => {
