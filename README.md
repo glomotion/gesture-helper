@@ -33,7 +33,8 @@ npm i gesture-helper
 
 **then:**
 ```javascript
-const gestureControl = new GestureHelper(document.querySelector('.el'), { ...options });
+import GestureHelper from 'gesture-helper';
+const gestureCtrl = new GestureHelper(document.querySelector('.el'), { ...options });
 gestureCtrl.on('tap', (e) => {
   console.log(this.event) // window.event
 });
