@@ -2,11 +2,12 @@ import GestureHelper from '../src/gesture-helper.js';
 
 const demoOutput = document.getElementById('output');
 const gestureCtrl = new GestureHelper(document.body, {
-  sensitivity: 5,
+  sensitivity: 0,
   passive: false,
   capture: false,
   swipeVelocity: 0.7,
   maxTapDuration: 300,
+  startDirectionLoopCount: 1,
   // longTapDuration: 500, // coming soon
 });
 
@@ -16,13 +17,12 @@ gestureCtrl.on('tap', (e) => {
   clear();
 });
 
-// gestureCtrl.on('pan.all', handleAll);
-gestureCtrl.on('pan', handler);
+gestureCtrl.on('pan.all', handleAll);
 // gestureCtrl.on('pan.y.**', handler);
 
-// gestureCtrl.on('pan.start', function(ev) {
-//   console.log('pan.start', ev);
-// });
+gestureCtrl.on('pan.start', function(ev) {
+  console.log('pan.start', ev);
+});
 
 gestureCtrl.on('pan.end', function(ev) {
   console.log('pan.end', ev);
