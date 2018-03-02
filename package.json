@@ -1,10 +1,20 @@
 {
   "name": "gesture-helper",
-  "version": "0.1.11",
+  "version": "0.1.13",
   "description": "a *tiny* touch & mouse library to help make tracking touch interactions more simple.",
+  "unpkg": "dist/index.min.js",
   "main": "dist/index.js",
-  "unpkg": "dist/umd.js",
-  "repository": "https://github.com/glomotion/gesture-helper.git",
+  "files": [
+    "dist/index.js",
+    "dist/index.min.js"
+  ],
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/glomotion/gesture-helper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/glomotion/gesture-helper/issues"
+  },
   "author": "Tim Paul <tim@glo.id.au>",
   "license": "MIT",
   "devDependencies": {
@@ -19,7 +29,7 @@
   },
   "scripts": {
     "demo": "webpack-dev-server --config ./webpack.demo.config.js --colors --open",
-    "build-split": "webpack --config ./webpack.split.config.js",
+    "build-split": "webpack --config ./webpack.config.js",
     "build-umd": "webpack --config ./webpack.umd.config.js",
     "build": "yarn build-split; yarn build-umd",
     "prepublish": "yarn build"
