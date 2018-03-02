@@ -1,8 +1,8 @@
 {
   "name": "gesture-helper",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "a *tiny* touch & mouse library to help make tracking touch interactions more simple.",
-  "unpkg": "dist/index.umd.js",
+  "unpkg": "dist/index.min.js",
   "main": "dist/index.js",
   "files": [
     "dist/index.js",
@@ -29,9 +29,9 @@
   },
   "scripts": {
     "demo": "webpack-dev-server --config ./webpack.demo.config.js --colors --open",
-    "build-split": "webpack --config ./webpack.config.js",
-    "build-umd": "webpack --config ./webpack.umd.config.js",
-    "build": "yarn build-split; yarn build-umd",
+    "build-normal": "webpack --config ./webpack.config.js",
+    "build-min": "webpack --config ./webpack.min.config.js",
+    "build": "yarn build-normal; yarn build-min",
     "prepublish": "yarn build"
   },
   "dependencies": {
