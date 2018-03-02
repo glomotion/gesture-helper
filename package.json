@@ -1,9 +1,9 @@
 {
   "name": "gesture-helper",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "a *tiny* touch & mouse library to help make tracking touch interactions more simple.",
-  "main": "dist/index.js",
-  "unpkg": "dist/index.js",
+  "main": "src/gesture-helper.js",
+  "unpkg": "dist/bundle.js",
   "repository": "https://github.com/glomotion/gesture-helper.git",
   "author": "Tim Paul <tim@glo.id.au>",
   "license": "MIT",
@@ -18,7 +18,7 @@
   },
   "scripts": {
     "demo": "webpack-dev-server --config ./webpack.demo.config.js --colors --open",
-    "build": "webpack --config ./webpack.config.js",
+    "build": "webpack --config ./webpack.config.js; webpack --config ./webpack.uglify.config.js",
     "prepublish": "yarn build"
   },
   "dependencies": {
