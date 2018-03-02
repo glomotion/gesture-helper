@@ -1,12 +1,13 @@
 'use strict';
 
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: './src/gesture-helper.js',
   output: {
     path: require('path').resolve('./dist/'),
-    filename: 'bundle.js',
+    filename: 'bundle.min.js',
     publicPath: '/',
     library: 'GestureHelper',
     libraryTarget: 'umd',
@@ -20,6 +21,17 @@ module.exports = {
     descriptionFiles: ['package.json'],
   },
   plugins: [
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        compress: {
+          warnings: false,
+          drop_console: true,
+        },
+        comments: false,
+      },
+      sourceMap: true,
+      parallel: true
+    }),
   ],
   module: {
     rules: [
