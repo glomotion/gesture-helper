@@ -438,7 +438,7 @@ var GestureHelper = function (_EventEmitter) {
         _ref$y = _ref.y,
         y = _ref$y === undefined ? 0 : _ref$y;
 
-    if (this.directionCount < this.options.startDirectionLoopCount) {
+    if (this.directionCount <= this.options.startDirectionLoopCount) {
       this.directionCount++;
       return null;
     } else {
@@ -463,6 +463,7 @@ var GestureHelper = function (_EventEmitter) {
     this.panning = false;
     this.startTime = (0, _performanceNow2.default)();
     this.clearVelocityStats();
+    this.emit('pan.prestart', { sourceEvent: e });
   };
 
   GestureHelper.prototype.handleMove = function handleMove(_ref3) {
@@ -496,9 +497,7 @@ var GestureHelper = function (_EventEmitter) {
 
       if (this.startDirection === 'horizontal') {
         deltaX < 0 ? this.emit('pan.x.left', { delta: deltaX, sourceEvent: e }) : this.emit('pan.x.right', { delta: deltaX, sourceEvent: e });
-      }
-
-      if (this.startDirection === 'vertical') {
+      } else if (this.startDirection === 'vertical') {
         deltaY < 0 ? this.emit('pan.y.up', { delta: deltaY, sourceEvent: e }) : this.emit('pan.y.down', { delta: deltaY, sourceEvent: e });
       }
 
