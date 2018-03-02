@@ -115,7 +115,7 @@ export default class GestureHelper extends EventEmitter2 {
   }
 
   getStartDirection({x=0,y=0}) {
-    if (this.directionCount < this.options.startDirectionLoopCount) {
+    if (this.directionCount <= this.options.startDirectionLoopCount) {
       this.directionCount++;
       return null;
     } else {
@@ -133,6 +133,7 @@ export default class GestureHelper extends EventEmitter2 {
     this.panning = false;
     this.startTime = perfNow();
     this.clearVelocityStats();
+    this.emit('pan.prestart', { sourceEvent: e });
   }
 
   handleMove({e={},x=0,y=0}) {
@@ -141,8 +142,9 @@ export default class GestureHelper extends EventEmitter2 {
 
     if (this.startDirection === null) {
       this.startDirection = this.getStartDirection({ x:deltaX, y:deltaY });
-    } else if (!this.panning && (Math.abs(deltaX) > this.options.sensitivity
-      || Math.abs(deltaY) > this.options.sensitivity)) {
+    } else if (!this.panning
+      && (Math.abs(deltaX) > this.options.sensitivity
+        || Math.abs(deltaY) > this.options.sensitivity)) {
 
       this.panning = true;
       this.emit('pan.start', {
@@ -162,9 +164,7 @@ export default class GestureHelper extends EventEmitter2 {
         deltaX < 0
           ? this.emit('pan.x.left', { delta: deltaX, sourceEvent: e })
           : this.emit('pan.x.right', { delta: deltaX, sourceEvent: e });
-      }
-
-      if (this.startDirection === 'vertical') {
+      } else if (this.startDirection === 'vertical') {
         deltaY < 0
           ? this.emit('pan.y.up', { delta: deltaY, sourceEvent: e })
           : this.emit('pan.y.down', { delta: deltaY, sourceEvent: e });

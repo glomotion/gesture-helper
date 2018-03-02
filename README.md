@@ -2,27 +2,30 @@
 a **tiny** touch & mouse library to help make tracking touch interactions more simple.
 
 Gesture helper extends https://github.com/asyncly/EventEmitter2, and returns an event emitter.
-Events can be name spaced, per EventEmitter2. This means that you can bind to the following events:
+Events can be namespaced, per EventEmitter2. This means that you can bind to events like:
 ```javascript
-tap
-pan.**
-pan.start
-pan.end
-pan.y.up
-pan.y.down
-pan.y.**
-pan.x.left
-pan.x.right
-pan.x.**
+tap // (for simple tap / click events)
+pan.** // (wildcard for all pan-related events)
+pan.prestart // (immediate touchStart event - mainly useful for immediately blocking browser behaviour)
+pan.start // (the beginning of a discernable drag event)
+pan.end // (the end of a detected drag event)
+pan.y.up // (a progress event as the finger moves up)
+pan.y.down // (a progress event as the finger moves down)
+pan.y.** // (wildcard for both up and down movement progress events)
+pan.x.left // (a progress event as the finger moves left)
+pan.x.right // (a progress event as the finger moves right)
+pan.x.** // (wildcard for both left and right movement progress events)
 ```
 
-In the interest of keeping the library small, versatile and uncomplicated - all source touch/mouse events are returned inside EE2 event payloads, as follows:
+In the interest of keeping the library small, unopinionated, and versatile - any preventDefault / stopPropogation / event bubbling related functionality is left untouched. This can be added to each application, depending on what you need.
+
+All source touch/mouse events are returned inside all EE2 event payloads, as follows
 ```javascript
 { ..., sourceEvent: e }
 ```
-This allows you to add ```preventDefault()``` and other native event functionality, as you need it.
+Eg. you can call ```ev.sourceEvent.preventDefault()``` as well as other native browser event functionality, as you need it.
 
-Per EE2, the event handler name (eg. ```pan.x.up```, ```pan.all```) is also returned to the listener function's scope as the property ```this.event```.
+Per EE2, the event handler name (eg. ```pan.x.up```, ```pan.all```) is also bound to the listener function's scope as the property ```this.event```.
 *Note: If you plan to access this property, please avoid defining handlers using arrow functions.
 
 # install:
