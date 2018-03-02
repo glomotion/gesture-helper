@@ -1,6 +1,6 @@
 {
   "name": "gesture-helper",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "a *tiny* touch & mouse library to help make tracking touch interactions more simple.",
   "main": "dist/bundle.js",
   "unpkg": "dist/bundle.js",
