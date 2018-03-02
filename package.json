@@ -25,6 +25,7 @@
   },
   "scripts": {
     "demo": "webpack-dev-server --config ./webpack.demo.config.js --colors --open",
+    "build-split": "webpack --config ./webpack.split.config.js",
     "build-normal": "webpack --config ./webpack.config.js",
     "build-min": "webpack --config ./webpack.min.config.js",
     "build": "yarn build-normal; yarn build-min",

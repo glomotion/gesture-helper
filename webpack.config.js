@@ -12,11 +12,13 @@ module.exports = {
     filename: '[name].js',
     chunkFilename: '[id].js',
     publicPath: '/',
+    library: 'GestureHelper',
+    libraryTarget: 'umd',
+    libraryExport: 'default',
+    umdNamedDefine: true,
   },
   resolve: {
-    modules: [
-      'node_modules',
-    ],
+    modules: [ 'node_modules', ],
     descriptionFiles: ['package.json'],
   },
   plugins: [],
