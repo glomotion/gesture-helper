@@ -2,7 +2,7 @@
   "name": "gesture-helper",
   "version": "0.1.8",
   "description": "a *tiny* touch & mouse library to help make tracking touch interactions more simple.",
-  "main": "src/gesture-helper.js",
+  "main": "dist/bundle.js",
   "unpkg": "dist/bundle.js",
   "repository": "https://github.com/glomotion/gesture-helper.git",
   "author": "Tim Paul <tim@glo.id.au>",
