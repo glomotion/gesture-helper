@@ -3,7 +3,9 @@
 const config = require('./webpack.config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-config.entry = './demo/demo.js';
+config.entry = {
+  index: './demo/demo.js',
+};
 config.devServer = {
   host: 'localhost',
   port: 8080,
@@ -13,9 +15,11 @@ config.devServer = {
 };
 config.plugins = [
   new HtmlWebpackPlugin({
-    inject: 'body',
+    inject: true,
     template: './demo/demo.html',
-    cache: false
+    cache: false,
+    // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+    chunksSortMode: 'dependency'
   }),
 ];
 module.exports = config;

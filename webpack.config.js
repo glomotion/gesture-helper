@@ -1,17 +1,17 @@
 'use strict';
 
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
-  entry: './src/gesture-helper.js',
+  entry: {
+    index: './src/gesture-helper.js',
+  },
   output: {
     path: require('path').resolve('./dist/'),
-    filename: 'bundle.js',
+    filename: '[name].js',
+    chunkFilename: '[id].js',
     publicPath: '/',
-    library: 'GestureHelper',
-    libraryTarget: 'umd',
-    libraryExport: 'default',
-    umdNamedDefine: true,
   },
   resolve: {
     modules: [
@@ -19,8 +19,7 @@ module.exports = {
     ],
     descriptionFiles: ['package.json'],
   },
-  plugins: [
-  ],
+  plugins: [],
   module: {
     rules: [
       {

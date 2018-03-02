@@ -1,16 +1,41 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define("GestureHelper", [], factory);
-	else if(typeof exports === 'object')
-		exports["GestureHelper"] = factory();
-	else
-		root["GestureHelper"] = factory();
-})(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// install a JSONP callback for chunk loading
+/******/ 	var parentJsonpFunction = window["webpackJsonp"];
+/******/ 	window["webpackJsonp"] = function webpackJsonpCallback(chunkIds, moreModules, executeModules) {
+/******/ 		// add "moreModules" to the modules object,
+/******/ 		// then flag all "chunkIds" as loaded and fire callback
+/******/ 		var moduleId, chunkId, i = 0, resolves = [], result;
+/******/ 		for(;i < chunkIds.length; i++) {
+/******/ 			chunkId = chunkIds[i];
+/******/ 			if(installedChunks[chunkId]) {
+/******/ 				resolves.push(installedChunks[chunkId][0]);
+/******/ 			}
+/******/ 			installedChunks[chunkId] = 0;
+/******/ 		}
+/******/ 		for(moduleId in moreModules) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
+/******/ 				modules[moduleId] = moreModules[moduleId];
+/******/ 			}
+/******/ 		}
+/******/ 		if(parentJsonpFunction) parentJsonpFunction(chunkIds, moreModules, executeModules);
+/******/ 		while(resolves.length) {
+/******/ 			resolves.shift()();
+/******/ 		}
+/******/ 		if(executeModules) {
+/******/ 			for(i=0; i < executeModules.length; i++) {
+/******/ 				result = __webpack_require__(__webpack_require__.s = executeModules[i]);
+/******/ 			}
+/******/ 		}
+/******/ 		return result;
+/******/ 	};
+/******/
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
+/******/
+/******/ 	// objects to store loaded and loading chunks
+/******/ 	var installedChunks = {
+/******/ 		1: 0
+/******/ 	};
 /******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
@@ -36,6 +61,55 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		return module.exports;
 /******/ 	}
 /******/
+/******/ 	// This file contains only the entry chunk.
+/******/ 	// The chunk loading function for additional chunks
+/******/ 	__webpack_require__.e = function requireEnsure(chunkId) {
+/******/ 		var installedChunkData = installedChunks[chunkId];
+/******/ 		if(installedChunkData === 0) {
+/******/ 			return new Promise(function(resolve) { resolve(); });
+/******/ 		}
+/******/
+/******/ 		// a Promise means "currently loading".
+/******/ 		if(installedChunkData) {
+/******/ 			return installedChunkData[2];
+/******/ 		}
+/******/
+/******/ 		// setup Promise in chunk cache
+/******/ 		var promise = new Promise(function(resolve, reject) {
+/******/ 			installedChunkData = installedChunks[chunkId] = [resolve, reject];
+/******/ 		});
+/******/ 		installedChunkData[2] = promise;
+/******/
+/******/ 		// start chunk loading
+/******/ 		var head = document.getElementsByTagName('head')[0];
+/******/ 		var script = document.createElement('script');
+/******/ 		script.type = 'text/javascript';
+/******/ 		script.charset = 'utf-8';
+/******/ 		script.async = true;
+/******/ 		script.timeout = 120000;
+/******/
+/******/ 		if (__webpack_require__.nc) {
+/******/ 			script.setAttribute("nonce", __webpack_require__.nc);
+/******/ 		}
+/******/ 		script.src = __webpack_require__.p + "" + chunkId + ".js";
+/******/ 		var timeout = setTimeout(onScriptComplete, 120000);
+/******/ 		script.onerror = script.onload = onScriptComplete;
+/******/ 		function onScriptComplete() {
+/******/ 			// avoid mem leaks in IE.
+/******/ 			script.onerror = script.onload = null;
+/******/ 			clearTimeout(timeout);
+/******/ 			var chunk = installedChunks[chunkId];
+/******/ 			if(chunk !== 0) {
+/******/ 				if(chunk) {
+/******/ 					chunk[1](new Error('Loading chunk ' + chunkId + ' failed.'));
+/******/ 				}
+/******/ 				installedChunks[chunkId] = undefined;
+/******/ 			}
+/******/ 		};
+/******/ 		head.appendChild(script);
+/******/
+/******/ 		return promise;
+/******/ 	};
 /******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
@@ -69,454 +143,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "/";
 /******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	// on error function for async loading
+/******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports) {
+/******/ ({
 
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _eventemitter = __webpack_require__(2);
-
-var _eventemitter2 = _interopRequireDefault(_eventemitter);
-
-var _performanceNow = __webpack_require__(3);
-
-var _performanceNow2 = _interopRequireDefault(_performanceNow);
-
-var _inputdevicecapabilitiesPolyfill = __webpack_require__(4);
-
-var _inputdevicecapabilitiesPolyfill2 = _interopRequireDefault(_inputdevicecapabilitiesPolyfill);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// @TODO: temp polyfill code, should tidy this a bit..
-
-
-(0, _inputdevicecapabilitiesPolyfill2.default)(window);
-
-var GestureHelper = function (_EventEmitter) {
-  _inherits(GestureHelper, _EventEmitter);
-
-  function GestureHelper() {
-    _classCallCheck(this, GestureHelper);
-
-    var _this = _possibleConstructorReturn(this, _EventEmitter.call(this, {
-      wildcard: true
-    }));
-
-    _this.mouseMove = function (e) {
-      _this.handleMove({ e: e, x: e.clientX, y: e.clientY });
-    };
-
-    _this.touchMove = function (e) {
-      _this.handleMove({ e: e, x: e.touches[0].clientX, y: e.touches[0].clientY });
-    };
-
-    _this.touchStart = function (e) {
-      _this.handleStart({
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-        e: e
-      });
-      _this.el.addEventListener('touchmove', _this.touchMove, _this.eventOptions);
-    };
-
-    _this.touchEnd = function (e) {
-      _this.handleEnd(e);
-      _this.el.removeEventListener('touchmove', _this.touchMove, _this.eventOptions);
-    };
-
-    _this.mouseDown = function (e) {
-      if (e.sourceCapabilities.firesTouchEvents) return;
-      _this.handleStart({ x: e.clientX, y: e.clientY, e: e });
-      _this.el.addEventListener('mousemove', _this.mouseMove, _this.eventOptions);
-    };
-
-    _this.mouseUp = function (e) {
-      if (e.sourceCapabilities.firesTouchEvents) return;
-      _this.handleEnd(e);
-      _this.el.removeEventListener('mousemove', _this.mouseMove, _this.eventOptions);
-    };
-
-    _this.handleEnd = function (e) {
-      var deltaTime = (0, _performanceNow2.default)() - _this.startTime;
-      if (_this.panning) {
-        _this.panning = false;
-        var isSwipe = false;
-        var swipeDirection = null;
-        if (_this.velocity.max.x > _this.options.swipeVelocity && _this.startDirection === 'horizontal') {
-
-          isSwipe = true;
-          swipeDirection = _this.velocity.current.x > 0 ? 'right' : 'left';
-        } else if (_this.velocity.max.y > _this.options.swipeVelocity && _this.startDirection === 'vertical') {
-
-          isSwipe = true;
-          swipeDirection = _this.velocity.current.y > 0 ? 'down' : 'up';
-        }
-        _this.emit('pan.end', { isSwipe: isSwipe, swipeDirection: swipeDirection, sourceEvent: e });
-      } else if (deltaTime <= _this.options.maxTapDuration) {
-        _this.emit('tap', { srcEvent: e });
-      }
-
-      return;
-    };
-
-    _this.el = arguments.length <= 0 ? undefined : arguments[0];
-    _this.options = Object.assign({}, {
-      sensitivity: 5,
-      passive: false,
-      capture: false,
-      swipeVelocity: 0.7,
-      maxTapDuration: 300,
-      longTapDuration: 400,
-      startDirectionLoopCount: 2
-    }, (arguments.length <= 1 ? undefined : arguments[1]) || {});
-
-    _this.panning = false;
-    _this.startDirection = null;
-    _this.directionCount = 0;
-    _this.clearVelocityStats();
-
-    // Small feature detect for support of "passive" events
-    _this.eventOptions = false;
-    try {
-      var options = Object.defineProperty({}, "passive", {
-        get: function get() {
-          _this.eventOptions = {
-            passive: !!_this.options.passive,
-            capture: !!_this.options.capture
-          };
-        }
-      });
-      _this.el.addEventListener("test", null, options);
-    } catch (err) {
-      console.error(err);
-      _this.eventOptions = {
-        capture: !!_this.options.capture
-      };
-    }
-
-    _this.setup();
-    return _this;
-  }
-
-  GestureHelper.prototype.clearVelocityStats = function clearVelocityStats() {
-    this.velocity = {
-      current: { x: 0, y: 0 },
-      max: { x: 0, y: 0 }
-    };
-  };
-
-  GestureHelper.prototype.isPanning = function isPanning() {
-    return this.panning;
-  };
-
-  GestureHelper.prototype.setup = function setup() {
-    this.el.addEventListener('mousedown', this.mouseDown, this.eventOptions);
-    this.el.addEventListener('mouseup', this.mouseUp, this.eventOptions);
-    this.el.addEventListener('touchstart', this.touchStart, this.eventOptions);
-    this.el.addEventListener('touchend', this.touchEnd, this.eventOptions);
-    this.el.addEventListener('touchcancel', this.touchEnd, this.eventOptions);
-  };
-
-  GestureHelper.prototype.destroy = function destroy() {
-    this.el.removeEventListener('mousedown', this.mouseDown, this.eventOptions);
-    this.el.removeEventListener('mouseup', this.mouseUp, this.eventOptions);
-    this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
-    this.el.removeEventListener('touchstart', this.touchStart, this.eventOptions);
-    this.el.removeEventListener('touchend', this.touchEnd, this.eventOptions);
-    this.el.removeEventListener('touchcancel', this.touchEnd, this.eventOptions);
-    this.el.removeEventListener('touchmove', this.touchMove, this.eventOptions);
-  };
-
-  GestureHelper.prototype.getStartDirection = function getStartDirection(_ref) {
-    var _ref$x = _ref.x,
-        x = _ref$x === undefined ? 0 : _ref$x,
-        _ref$y = _ref.y,
-        y = _ref$y === undefined ? 0 : _ref$y;
-
-    if (this.directionCount <= this.options.startDirectionLoopCount) {
-      this.directionCount++;
-      return null;
-    } else {
-      return Math.abs(x) > Math.abs(y) ? 'horizontal' : 'vertical';
-    }
-  };
-
-  GestureHelper.prototype.handleStart = function handleStart(_ref2) {
-    var _ref2$x = _ref2.x,
-        x = _ref2$x === undefined ? 0 : _ref2$x,
-        _ref2$y = _ref2.y,
-        y = _ref2$y === undefined ? 0 : _ref2$y,
-        _ref2$e = _ref2.e,
-        e = _ref2$e === undefined ? {} : _ref2$e;
-
-
-    // Ensure all settings are reset:
-    this.startX = x;
-    this.startY = y;
-    this.startDirection = null;
-    this.directionCount = 1;
-    this.panning = false;
-    this.startTime = (0, _performanceNow2.default)();
-    this.clearVelocityStats();
-    this.emit('pan.prestart', { sourceEvent: e });
-  };
-
-  GestureHelper.prototype.handleMove = function handleMove(_ref3) {
-    var _ref3$e = _ref3.e,
-        e = _ref3$e === undefined ? {} : _ref3$e,
-        _ref3$x = _ref3.x,
-        x = _ref3$x === undefined ? 0 : _ref3$x,
-        _ref3$y = _ref3.y,
-        y = _ref3$y === undefined ? 0 : _ref3$y;
-
-    var deltaX = x - this.startX;
-    var deltaY = y - this.startY;
-
-    if (this.startDirection === null) {
-      this.startDirection = this.getStartDirection({ x: deltaX, y: deltaY });
-    } else if (!this.panning && (Math.abs(deltaX) > this.options.sensitivity || Math.abs(deltaY) > this.options.sensitivity)) {
-
-      this.panning = true;
-      this.emit('pan.start', {
-        startDirection: this.startDirection,
-        sourceEvent: e
-      });
-    }
-
-    if (this.panning) {
-      this.emit('pan.all', {
-        startDirection: this.startDirection,
-        deltaX: deltaX, deltaY: deltaY,
-        sourceEvent: e
-      });
-
-      if (this.startDirection === 'horizontal') {
-        deltaX < 0 ? this.emit('pan.x.left', { delta: deltaX, sourceEvent: e }) : this.emit('pan.x.right', { delta: deltaX, sourceEvent: e });
-      } else if (this.startDirection === 'vertical') {
-        deltaY < 0 ? this.emit('pan.y.up', { delta: deltaY, sourceEvent: e }) : this.emit('pan.y.down', { delta: deltaY, sourceEvent: e });
-      }
-
-      // velocity = total distance moved / the time taken
-      var deltaTime = (0, _performanceNow2.default)() - this.startTime;
-      this.velocity.current.x = deltaX / deltaTime;
-      this.velocity.current.y = deltaY / deltaTime;
-      this.velocity.max.x = Math.max(this.velocity.max.x, Math.abs(this.velocity.current.x));
-      this.velocity.max.y = Math.max(this.velocity.max.y, Math.abs(this.velocity.current.y));
-    }
-  };
-
-  return GestureHelper;
-}(_eventemitter2.default);
-
-exports.default = GestureHelper;
-
-/***/ }),
-/* 2 */
+/***/ "JNfv":
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -1303,53 +936,11 @@ exports.default = GestureHelper;
   }
 }();
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("W2nU")))
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
-(function() {
-  var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
-
-  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
-    module.exports = function() {
-      return performance.now();
-    };
-  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
-    module.exports = function() {
-      return (getNanoSeconds() - nodeLoadTime) / 1e6;
-    };
-    hrtime = process.hrtime;
-    getNanoSeconds = function() {
-      var hr;
-      hr = hrtime();
-      return hr[0] * 1e9 + hr[1];
-    };
-    moduleLoadTime = getNanoSeconds();
-    upTime = process.uptime() * 1e9;
-    nodeLoadTime = moduleLoadTime - upTime;
-  } else if (Date.now) {
-    module.exports = function() {
-      return Date.now() - loadTime;
-    };
-    loadTime = Date.now();
-  } else {
-    module.exports = function() {
-      return new Date().getTime() - loadTime;
-    };
-    loadTime = new Date().getTime();
-  }
-
-}).call(this);
-
-//# sourceMappingURL=performance-now.js.map
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 4 */
+/***/ "OZEC":
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1515,6 +1106,241 @@ function InputDeviceCapabilities(global) {
 
 exports.default = InputDeviceCapabilities;
 
+/***/ }),
+
+/***/ "UGHC":
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
+(function() {
+  var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
+
+  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
+    module.exports = function() {
+      return performance.now();
+    };
+  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
+    module.exports = function() {
+      return (getNanoSeconds() - nodeLoadTime) / 1e6;
+    };
+    hrtime = process.hrtime;
+    getNanoSeconds = function() {
+      var hr;
+      hr = hrtime();
+      return hr[0] * 1e9 + hr[1];
+    };
+    moduleLoadTime = getNanoSeconds();
+    upTime = process.uptime() * 1e9;
+    nodeLoadTime = moduleLoadTime - upTime;
+  } else if (Date.now) {
+    module.exports = function() {
+      return Date.now() - loadTime;
+    };
+    loadTime = Date.now();
+  } else {
+    module.exports = function() {
+      return new Date().getTime() - loadTime;
+    };
+    loadTime = new Date().getTime();
+  }
+
+}).call(this);
+
+//# sourceMappingURL=performance-now.js.map
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__("W2nU")))
+
+/***/ }),
+
+/***/ "W2nU":
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
 /***/ })
-/******/ ])["default"];
-});
+
+/******/ });
