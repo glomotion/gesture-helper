@@ -40,7 +40,7 @@ npm i gesture-helper
 import GestureHelper from 'gesture-helper';
 const gestureCtrl = new GestureHelper(document.querySelector('.el'), { ...options });
 gestureCtrl.on('tap', (e) => {
-  console.log(this.event) // window.event
+  console.log(this.event) // undefined
 });
 gestureCtrl.on('pan.all', function(e) {
   console.log(this.event) // 'pan.all'
