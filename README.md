@@ -26,7 +26,7 @@ All source touch/mouse events are returned inside all EE2 event payloads, as fol
 ```
 Eg. you can call ```ev.sourceEvent.preventDefault()``` as well as other native browser event functionality, as you need it.
 
-Per EE2, the event handler name (eg. ```pan.x.up```, ```pan.all```) is also bound to the listener function's scope as the property ```this.event```.
+Per EE2, the event handler name (eg. ```pan.y.up```, ```pan.x.left```, ```pan.all```) is also bound to the listener function's scope as the property ```this.event```.
 *Note: If you plan to access this property, please avoid defining handlers using arrow functions.
 
 # install:
