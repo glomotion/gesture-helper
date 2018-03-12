@@ -31,8 +31,8 @@ gestureCtrl.on('pan.end', function(ev) {
   clear();
 });
 
-gestureCtrl.on('momentum.all', function(ev) {
-  console.log('momentum.all', ev);
+gestureCtrl.on('momentum.**', function(ev) {
+  console.log('momentum.**', this.event, ev);
   demoOutput.innerHTML = JSON.stringify(ev);
 });
 

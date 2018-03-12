@@ -2,6 +2,8 @@
 
 import EventEmitter2 from 'eventemitter2';
 import perfNow from 'performance-now';
+// import emitter from './emitter';
+import momentum from './momentum';
 
 // @TODO: temp polyfill code, should tidy this a bit..
 import InputDeviceCapabilitiesPolyfill from './inputdevicecapabilities-polyfill.js';
@@ -172,10 +174,12 @@ export default class GestureHelper extends EventEmitter2 {
 
       // velocity = total distance moved / the time taken
       const deltaTime = perfNow() - this.startTime;
-      this.velocity.current.x = deltaX / deltaTime;
-      this.velocity.current.y = deltaY / deltaTime;
+      this.velocity.current.x = deltaX / deltaTime * 100;
+      this.velocity.current.y = deltaY / deltaTime * 100;
       this.velocity.max.x = Math.max(this.velocity.max.x, Math.abs(this.velocity.current.x));
       this.velocity.max.y = Math.max(this.velocity.max.y, Math.abs(this.velocity.current.y));
+      this.lastDeltaX = deltaX;
+      this.lastDeltaY = deltaY;
     }
   }
 
@@ -207,6 +211,10 @@ export default class GestureHelper extends EventEmitter2 {
             x: this.lastDeltaX,
             y: this.lastDeltaY,
           },
+
+          // @TODO, this feels pretty sloppy.
+          // There must be a nice way to structure this lib
+          emitter: this,
         });
         this.momentum.start();
       }
