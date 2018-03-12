@@ -197,6 +197,20 @@ export default class GestureHelper extends EventEmitter2 {
         swipeDirection = this.velocity.current.y > 0 ? 'down' : 'up';
       }
       this.emit('pan.end', { isSwipe, swipeDirection, sourceEvent: e });
+      if (this.options.useMomentum) {
+        this.momentum = momentum({
+          velocity: {
+            x: this.velocity.current.x,
+            y: this.velocity.current.y,
+          },
+          from: {
+            x: this.lastDeltaX,
+            y: this.lastDeltaY,
+          },
+        });
+        this.momentum.start();
+      }
+
     } else if (deltaTime <= this.options.maxTapDuration) {
       this.emit('tap', { srcEvent: e });
     }

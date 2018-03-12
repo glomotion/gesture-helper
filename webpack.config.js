@@ -35,6 +35,7 @@ module.exports = {
           ],
           plugins: [
             'transform-class-properties',
+            // 'transform-hoist-nested-functions',
           ]
         }
       }
