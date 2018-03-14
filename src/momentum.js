@@ -59,8 +59,8 @@ const momentum = (props = {}) => {
       elapsed = now() - timeStart;
       const deltaX = -amplitudeX * Math.exp(-elapsed / timeConstant);
       const deltaY = -amplitudeY * Math.exp(-elapsed / timeConstant);
-      const isMovingX = deltaX > restDelta || deltaX < -restDelta;
-      const isMovingY = deltaY > restDelta || deltaY < -restDelta;
+      let isMovingX = deltaX > restDelta || deltaX < -restDelta;
+      let isMovingY = deltaY > restDelta || deltaY < -restDelta;
       const currentX = isMovingX ? targetX + deltaX : targetX;
       const currentY = isMovingY ? targetY + deltaY : targetY;
 
@@ -99,7 +99,7 @@ const momentum = (props = {}) => {
 
   return {
     start: update,
-    stop: () => isMoving = false,
+    stop: () => isMovingX = isMovingY = false,
   }
 };
 
