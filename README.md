@@ -16,6 +16,7 @@ pan.y.** // (wildcard for both up and down movement progress events)
 pan.x.left // (a progress event as the finger moves left)
 pan.x.right // (a progress event as the finger moves right)
 pan.x.** // (wildcard for both left and right movement progress events)
+momentum.** //
 momentum.start //
 momentum.all //
 momentum.y.** //
