@@ -213,7 +213,7 @@ export default class GestureHelper extends EventEmitter2 {
           },
 
           // @TODO, this feels pretty sloppy.
-          // There must be a nice way to structure this lib
+          // There must be a nicer way to structure this lib
           emitter: this,
         });
         this.momentum.start();

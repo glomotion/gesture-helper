@@ -3,7 +3,6 @@
 
 import rAF from 'raf';
 import now from 'performance-now';
-// import emitter from './emitter';
 
 const momentum = (props = {}) => {
   const {
@@ -99,7 +98,10 @@ const momentum = (props = {}) => {
 
   return {
     start: update,
-    stop: () => isMovingX = isMovingY = false,
+    stop: () => {
+      isMovingX = false;
+      isMovingY = false;
+    },
   }
 };
 
