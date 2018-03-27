@@ -2,7 +2,6 @@
 
 import EventEmitter2 from 'eventemitter2';
 import perfNow from 'performance-now';
-// import emitter from './emitter';
 import momentum from './momentum';
 
 // @TODO: temp polyfill code, should tidy this a bit..
