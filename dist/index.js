@@ -343,6 +343,8 @@ var GestureHelper = function (_EventEmitter) {
 
     _this.handleEnd = function (e) {
       var deltaTime = (0, _performanceNow2.default)() - _this.startTime;
+      _this.emit('pan.preend', { sourceEvent: e });
+
       if (_this.panning) {
         _this.panning = false;
         var isSwipe = false;

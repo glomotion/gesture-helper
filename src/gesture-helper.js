@@ -181,6 +181,8 @@ export default class GestureHelper extends EventEmitter2 {
 
   handleEnd = (e) => {
     const deltaTime = perfNow() - this.startTime;
+    this.emit('pan.preend', { sourceEvent: e });
+
     if (this.panning) {
       this.panning = false;
       let isSwipe = false;
