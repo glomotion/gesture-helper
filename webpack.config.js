@@ -7,6 +7,7 @@ module.exports = {
   entry: {
     index: './src/gesture-helper.js',
   },
+  mode: 'production',
   output: {
     path: require('path').resolve('./dist/'),
     filename: '[name].js',
