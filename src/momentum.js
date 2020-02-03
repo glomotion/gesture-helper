@@ -41,9 +41,6 @@ const momentum = (props = {}) => {
   const amplitudeY = power * velocity.y;
   const idealTargetX = Math.round(from.x + amplitudeX);
   const idealTargetY = Math.round(from.y + amplitudeY);
-  // const target = (typeof modifyTarget === 'undefined')
-  //   ? idealTargetX
-  //   : modifyTarget(idealTarget);
   const targetX = idealTargetX;
   const targetY = idealTargetY;
   emitter.emit('momentum.start');
@@ -63,12 +60,12 @@ const momentum = (props = {}) => {
       const currentX = isMovingX ? targetX + deltaX : targetX;
       const currentY = isMovingY ? targetY + deltaY : targetY;
 
-  // console.log(`momentum update ---------------------
-  //   fromX: ${from.x},
-  //   fromY: ${from.y},
-  //   targetX: ${targetX},
-  //   targetY: ${targetY},
-  // `);
+      // console.log(`momentum update ---------------------
+      //   fromX: ${from.x},
+      //   fromY: ${from.y},
+      //   targetX: ${targetX},
+      //   targetY: ${targetY},
+      // `);
 
       emitter.emit('momentum.all', {
         deltaX: currentX,
@@ -91,7 +88,7 @@ const momentum = (props = {}) => {
         update();
       } else {
         console.log('stopping!');
-        emitter.emit('momentum.end', { });
+        emitter.emit('momentum.end', {});
       }
     });
   }

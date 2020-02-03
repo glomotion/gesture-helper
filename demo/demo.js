@@ -21,18 +21,18 @@ gestureCtrl.on('tap', (e) => {
 gestureCtrl.on('pan.all', handleAll);
 // gestureCtrl.on('pan.y.**', handler);
 
-gestureCtrl.on('pan.start', function(ev) {
+gestureCtrl.on('pan.start', function (ev) {
   console.log('pan.start', ev);
 });
 
-gestureCtrl.on('pan.end', function(ev) {
+gestureCtrl.on('pan.end', function (ev) {
   console.log('pan.end', ev);
   demoOutput.innerHTML = JSON.stringify(ev);
   clear();
 });
 
-gestureCtrl.on('momentum.**', function(ev) {
-  console.log('momentum.**', this.event, ev);
+gestureCtrl.on('momentum.**', function (ev) {
+  console.log('momentum.**', ev);
   demoOutput.innerHTML = JSON.stringify(ev);
 });
 

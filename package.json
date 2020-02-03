@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "eventemitter2": "^5.0.1",
-    "framesync": "^3.1.7",
     "performance-now": "^2.1.0",
     "raf": "^3.4.0"
   },
