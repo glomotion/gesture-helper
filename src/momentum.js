@@ -9,6 +9,7 @@ const momentum = (props = {}) => {
     velocity = { x: 0, y: 0 },
     from = { x: 0, y: 0 },
     power = 0.8,
+    // @TODO: make this configurable
     timeConstant = 350,
     restDelta = 0.5,
     roundDestination,
