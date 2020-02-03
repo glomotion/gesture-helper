@@ -1,4 +1,5 @@
-/* inputdevicecapabilities-polyfill.js - https://github.com/WICG/InputDeviceCapabilities
+/* inputdevicecapabilities-polyfill.js - 
+https://github.com/WICG/InputDeviceCapabilities
  *
  * Uses a (not perfectly accurate) heuristic to  implement
  * UIEvent.sourceCapabilities and InputDeviceCapabilities.firesTouchEvents.
@@ -27,16 +28,16 @@
 function InputDeviceCapabilities(global) {
   'use strict';
 
-  if ('InputDeviceCapabilities' in global|| 'sourceCapabilities' in UIEvent.prototype)
+  if ('InputDeviceCapabilities' in global || 'sourceCapabilities' in UIEvent.prototype)
     return;
 
   function InputDeviceCapabilities(inputDeviceCapabilitiesInit) {
-      Object.defineProperty(this, '__firesTouchEvents', {
-        value: (inputDeviceCapabilitiesInit && 'firesTouchEvents' in inputDeviceCapabilitiesInit) ?
-          inputDeviceCapabilitiesInit.firesTouchEvents : false,
-        writable: false,
-        enumerable: false
-      });
+    Object.defineProperty(this, '__firesTouchEvents', {
+      value: (inputDeviceCapabilitiesInit && 'firesTouchEvents' in inputDeviceCapabilitiesInit) ?
+        inputDeviceCapabilitiesInit.firesTouchEvents : false,
+      writable: false,
+      enumerable: false
+    });
   };
   // Put the attributes prototype as getter functions to match the IDL.
   InputDeviceCapabilities.prototype = {
@@ -46,8 +47,8 @@ function InputDeviceCapabilities(global) {
   };
   global.InputDeviceCapabilities = InputDeviceCapabilities;
 
-  var touchDevice = new InputDeviceCapabilities({firesTouchEvents:true});
-  var nonTouchDevice = new InputDeviceCapabilities({firesTouchEvents:false});
+  var touchDevice = new InputDeviceCapabilities({ firesTouchEvents: true });
+  var nonTouchDevice = new InputDeviceCapabilities({ firesTouchEvents: false });
 
   // Keep track of the last time we saw a touch event.  Note that if you don't
   // already have touch handlers on your document, this can have unfortunate
@@ -76,7 +77,7 @@ function InputDeviceCapabilities(global) {
   var touchTimeConstant = 1000;
 
   Object.defineProperty(UIEvent.prototype, 'sourceCapabilities', {
-    get: function() {
+    get: function () {
       // Handle script-generated events and events which have already had their
       // sourceCapabilities read.
       if (specifiedSourceCapabilitiesName in this)
@@ -128,7 +129,7 @@ function InputDeviceCapabilities(global) {
       return;
 
     var origCtor = global[constructorName];
-    global[constructorName] = function(type, initDict) {
+    global[constructorName] = function (type, initDict) {
       var sourceCapabilities = (initDict && initDict.sourceCapabilities) ? initDict.sourceCapabilities : null;
       // Need to explicitly remove sourceCapabilities from the dictionary as it would cause
       // a type error in blink when InputDeviceCapabilities support is disabled.
@@ -154,7 +155,7 @@ function InputDeviceCapabilities(global) {
 
   // Ensure events created with document.createEvent always get a null sourceCapabilities
   var origCreateEvent = Document.prototype.createEvent;
-  Document.prototype.createEvent = function(type) {
+  Document.prototype.createEvent = function (type) {
     var evt = origCreateEvent.call(this, type);
     if (evt instanceof UIEvent) {
       Object.defineProperty(evt, specifiedSourceCapabilitiesName, {

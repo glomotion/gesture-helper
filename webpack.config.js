@@ -7,6 +7,7 @@ module.exports = {
   entry: {
     index: './src/gesture-helper.js',
   },
+  mode: 'production',
   output: {
     path: require('path').resolve('./dist/'),
     filename: '[name].js',
@@ -18,7 +19,7 @@ module.exports = {
     umdNamedDefine: true,
   },
   resolve: {
-    modules: [ 'node_modules', ],
+    modules: ['node_modules',],
     descriptionFiles: ['package.json'],
   },
   plugins: [],
@@ -28,15 +29,12 @@ module.exports = {
         test: /\.js/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: {
-          babelrc: false,
-          presets: [
-            ['es2015', { loose: true }],
-          ],
+        options: {
+          presets: ['@babel/preset-env'],
           plugins: [
-            'transform-class-properties',
+            "@babel/plugin-proposal-class-properties",
           ]
-        }
+        },
       }
     ]
   },

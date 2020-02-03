@@ -8,6 +8,7 @@ const gestureCtrl = new GestureHelper(document.body, {
   swipeVelocity: 0.7,
   maxTapDuration: 300,
   startDirectionLoopCount: 1,
+  useMomentum: true,
   // longTapDuration: 500, // coming soon
 });
 
@@ -20,14 +21,19 @@ gestureCtrl.on('tap', (e) => {
 gestureCtrl.on('pan.all', handleAll);
 // gestureCtrl.on('pan.y.**', handler);
 
-gestureCtrl.on('pan.start', function(ev) {
+gestureCtrl.on('pan.start', function (ev) {
   console.log('pan.start', ev);
 });
 
-gestureCtrl.on('pan.end', function(ev) {
+gestureCtrl.on('pan.end', function (ev) {
   console.log('pan.end', ev);
   demoOutput.innerHTML = JSON.stringify(ev);
   clear();
+});
+
+gestureCtrl.on('momentum.**', function (ev) {
+  console.log('momentum.**', ev);
+  demoOutput.innerHTML = JSON.stringify(ev);
 });
 
 function handleAll(ev) {

@@ -3,6 +3,8 @@
 const config = require('./webpack.config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+config.mode = 'development';
+config.devtool = 'eval-source-map';
 config.entry = {
   index: './demo/demo.js',
 };
