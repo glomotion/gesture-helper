@@ -11,7 +11,6 @@ module.exports = {
   output: {
     path: require("path").resolve("./dist/"),
     filename: "[name].js",
-    chunkFilename: "[id].js",
     publicPath: "/",
     library: "GestureHelper",
     libraryTarget: "umd",
@@ -35,5 +34,10 @@ module.exports = {
         }
       }
     ]
+  },
+  optimization: {
+    splitChunks: {
+      chunks: "all"
+    }
   }
 };
