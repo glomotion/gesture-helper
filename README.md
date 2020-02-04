@@ -1,8 +1,10 @@
 # gesture-helper
+
 a **tiny** (~5kb gzipped bundle) touch & mouse library to help make tracking touch interactions more simple.
 
 Gesture helper extends https://github.com/asyncly/EventEmitter2, and returns an event emitter.
 Events can be namespaced, per EventEmitter2. This means that you can bind to events like:
+
 ```javascript
 tap // (for simple tap / click events)
 pan.** // (wildcard for all pan-related events)
@@ -26,45 +28,52 @@ momentum.x.** //
 In the interest of keeping the library small, unopinionated, and versatile - any preventDefault / stopPropogation / event bubbling related functionality is left untouched. This can be added to each application, depending on what you need.
 
 All source touch/mouse events are returned inside all EE2 event payloads, as follows
+
 ```javascript
 { ..., sourceEvent: e }
 ```
-Eg. you can call ```ev.sourceEvent.preventDefault()``` as well as other native browser event functionality, as you need it.
 
-Per EE2, the event handler name (eg. ```pan.y.up```, ```pan.x.left```, ```pan.all```) is also bound to the listener function's scope as the property ```this.event```.
-*Note: If you plan to access this property, please avoid defining handlers using arrow functions.
+Eg. you can call `ev.sourceEvent.preventDefault()` as well as other native browser event functionality, as you need it.
+
+Per EE2, the event handler name (eg. `pan.y.up`, `pan.x.left`, `pan.all`) is also bound to the listener function's scope as the property `this.event`.
+\*Note: If you plan to access this property, please avoid defining handlers using arrow functions.
 
 # install:
+
 ```
 yarn install gesture-helper
 npm i gesture-helper
 ```
 
 **then:**
+
 ```javascript
-import GestureHelper from 'gesture-helper';
-const gestureCtrl = new GestureHelper(document.querySelector('.el'), { ...options });
-gestureCtrl.on('tap', (e) => {
-  console.log(this.event) // undefined
+import GestureHelper from "gesture-helper";
+const gestureCtrl = new GestureHelper(document.querySelector(".el"), {
+  ...options
 });
-gestureCtrl.on('pan.all', function(e) {
-  console.log(this.event) // 'pan.all'
+gestureCtrl.on("tap", e => {
+  console.log(this.event); // undefined
+});
+gestureCtrl.on("pan.all", function(e) {
+  console.log(this.event); // 'pan.all'
 });
 ```
 
 # demo:
+
 to see this component in action, run:
+
 ```
 yarn demo
 ```
 
-
 # optional settings (with default value):
+
 ```javascript
   passive: false,
   capture: false,
   sensitivity: Number(5), // Integer: Px's movement to allow before capturing pan event
-  swipeVelocity: Float(0.7), // Float: Velocity threshold range for varied swipe detection
+  swipeVelocity: Number(60), // Integer: Velocity threshold range for varied swipe detection
   maxTapDuration: Number(300), // Integer: Milliseconds of finger being on the screen before a tap event is ignored
 ```
-
