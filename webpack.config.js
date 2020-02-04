@@ -1,26 +1,26 @@
-'use strict';
+"use strict";
 
-const webpack = require('webpack');
-const path = require('path');
+const webpack = require("webpack");
+const path = require("path");
 
 module.exports = {
   entry: {
-    index: './src/gesture-helper.js',
+    index: "./src/gesture-helper.js"
   },
-  mode: 'production',
+  mode: "production",
   output: {
-    path: require('path').resolve('./dist/'),
-    filename: '[name].js',
-    chunkFilename: '[id].js',
-    publicPath: '/',
-    library: 'GestureHelper',
-    libraryTarget: 'umd',
-    libraryExport: 'default',
-    umdNamedDefine: true,
+    path: require("path").resolve("./dist/"),
+    filename: "[name].js",
+    chunkFilename: "[id].js",
+    publicPath: "/",
+    library: "GestureHelper",
+    libraryTarget: "umd",
+    libraryExport: "default",
+    umdNamedDefine: true
   },
   resolve: {
-    modules: ['node_modules',],
-    descriptionFiles: ['package.json'],
+    modules: ["node_modules"],
+    descriptionFiles: ["package.json"]
   },
   plugins: [],
   module: {
@@ -28,14 +28,12 @@ module.exports = {
       {
         test: /\.js/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
         options: {
-          presets: ['@babel/preset-env'],
-          plugins: [
-            "@babel/plugin-proposal-class-properties",
-          ]
-        },
+          presets: ["@babel/preset-env"],
+          plugins: ["@babel/plugin-proposal-class-properties"]
+        }
       }
     ]
-  },
+  }
 };
