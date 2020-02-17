@@ -2,7 +2,6 @@
 
 import EventEmitter2 from "eventemitter2";
 import perfNow from "performance-now";
-import momentum from "./momentum";
 
 // @TODO: temp polyfill code, should tidy this a bit..
 import InputDeviceCapabilitiesPolyfill from "./inputdevicecapabilities-polyfill.js";
