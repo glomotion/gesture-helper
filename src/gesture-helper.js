@@ -128,11 +128,14 @@ export default class GestureHelper extends EventEmitter2 {
   }
 
   getStartDirection({ x = 0, y = 0 }) {
+    console.log(`get start direction!!! 
+      x: ${Math.abs(x)},
+      y: ${Math.abs(y)}`);
     if (this.directionCount <= this.options.startDirectionLoopCount) {
       this.directionCount++;
       return null;
     } else {
-      return Math.abs(x) > Math.abs(y) ? "horizontal" : "vertical";
+      return Math.abs(x) >= Math.abs(y) ? "horizontal" : "vertical";
     }
   }
 

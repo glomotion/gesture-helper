@@ -4,9 +4,10 @@ const demoOutput = document.getElementById("output");
 const gestureCtrl = new GestureHelper(document.body, {
   sensitivity: 0,
   passive: false,
-  capture: false
+  capture: false,
   // useMomentum: true
   // longTapDuration: 500, // coming soon
+  startDirectionLoopCount: 10,
 });
 
 gestureCtrl.on("tap", e => {
