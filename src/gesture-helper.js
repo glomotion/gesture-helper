@@ -127,11 +127,20 @@ export default class GestureHelper extends EventEmitter2 {
   }
 
   getStartDirection({ x = 0, y = 0 }) {
-    if (this.directionCount <= this.options.startDirectionLoopCount) {
-      this.directionCount++;
+    // console.log(`getStartDirection()
+    //   x: ${Math.abs(x)},
+    //   y: ${Math.abs(y)},
+    // `);
+    if (
+      this.directionCount <= this.options.startDirectionLoopCount ||
+      Math.abs(x) === Math.abs(y)
+    ) {
+      this.directionCount += 1;
       return null;
     } else {
-      return Math.abs(x) > Math.abs(y) ? "horizontal" : "vertical";
+      const direction = Math.abs(x) >= Math.abs(y) ? "horizontal" : "vertical";
+      // console.log('!!!!!!!!!!!!!! SET direction !!!!!!!!!!!!', direction);
+      return direction;
     }
   }
 
