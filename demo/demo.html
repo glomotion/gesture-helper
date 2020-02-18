@@ -22,9 +22,16 @@
       }
 
       body {
+        background: white;
+        display: flex;
+        padding: 50px;
+      }
+
+      #touchArea {
+        height: 100%;
+        width: 100%;
         display: flex;
         background: #f1f1f1;
-        border: 30px solid white;
       }
 
       #output {
@@ -40,6 +47,8 @@
     </style>
   </head>
   <body>
-    <pre id="output">click &amp; drag horizontally ...</pre>
+    <div id="touchArea">
+      <pre id="output">click &amp; drag horizontally ...</pre>
+    </div>
   </body>
 </html>
