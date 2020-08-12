@@ -2,6 +2,8 @@
 
 import EventEmitter2 from "eventemitter2";
 import perfNow from "performance-now";
+import { ResizeObserver } from "@juggle/resize-observer";
+import debounce from "lodash.debounce";
 
 // @TODO: temp polyfill code, should tidy this a bit..
 import InputDeviceCapabilitiesPolyfill from "./inputdevicecapabilities-polyfill.js";
@@ -33,7 +35,11 @@ export default class GestureHelper extends EventEmitter2 {
     this.panning = false;
     this.startDirection = null;
     this.directionCount = 0;
+    this.dimensions = { w: 0, h: 0 };
     this.clearVelocityStats();
+    
+    // Deploy a native ResizeOberver for this component instance:
+    this.ro.observe(this.el);
 
     // Small feature detect for support of 'passive' events
     this.eventOptions = false;
@@ -56,6 +62,18 @@ export default class GestureHelper extends EventEmitter2 {
 
     this.setup();
   }
+
+  ro = new ResizeObserver((entries) => {
+    entries.forEach(() => this.debouncedResize());
+  });
+
+  debouncedResize = debounce(() => {
+    const { offsetWidth, offsetHeight } = this.el;
+    this.dimensions = {
+      w: offsetWidth,
+      h: offsetHeight,
+    };
+  }, 300);
 
   clearVelocityStats() {
     this.velocity = {
@@ -160,8 +178,8 @@ export default class GestureHelper extends EventEmitter2 {
 
   checkOutOfBounds({ x, y }) {
     const tolerance = this.options.outsideBoundsOffset;
-    const width = this.el.offsetWidth - tolerance;
-    const height = this.el.offsetHeight - tolerance;
+    const width = this.dimensions.w - tolerance;
+    const height = this.dimensions.h - tolerance;
     return x >= width || x <= tolerance || y >= height || y <= tolerance;
   }
 
