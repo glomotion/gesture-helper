@@ -1,6 +1,6 @@
 # gesture-helper
 
-a **tiny** (~5kb gzipped bundle) touch & mouse library to help make tracking touch interactions more simple.
+a **tiny** touch & mouse library to help make tracking touch interactions more simple.
 
 Gesture helper extends https://github.com/asyncly/EventEmitter2, and returns an event emitter.
 Events can be namespaced, per EventEmitter2. This means that you can bind to events like:
