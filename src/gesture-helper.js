@@ -24,6 +24,8 @@ export default class GestureHelper extends EventEmitter2 {
         maxTapDuration: 100,
         longTapDuration: 400,
         startDirectionLoopCount: 2,
+        terminatePanOutsideBounds: false,
+        outsideBoundsOffset: 10,
       },
       props[1] || {}
     );
@@ -157,10 +159,9 @@ export default class GestureHelper extends EventEmitter2 {
   }
 
   checkOutOfBounds({ x, y }) {
-    const tolerance = 3;
+    const tolerance = this.options.outsideBoundsOffset;
     const width = this.el.offsetWidth - tolerance;
     const height = this.el.offsetHeight - tolerance;
-    console.log('!!!!!!', x, width, y, height);
     return x >= width || x <= tolerance || y >= height || y <= tolerance;
   }
 
@@ -187,9 +188,9 @@ export default class GestureHelper extends EventEmitter2 {
         this.checkOutOfBounds({
           x: deltaX + this.startX,
           y: deltaY + this.startY,
-        })
+        }) &&
+        this.options.terminatePanOutsideBounds
       ) {
-        console.log("!!!!!!!!!!!!!!!!!!!", e);
         this.touchEnd(e);
         this.mouseUp(e);
         return false;
