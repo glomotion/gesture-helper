@@ -10,7 +10,7 @@ InputDeviceCapabilitiesPolyfill(window);
 export default class GestureHelper extends EventEmitter2 {
   constructor(...props) {
     super({
-      wildcard: true
+      wildcard: true,
     });
 
     this.el = props[0];
@@ -21,9 +21,9 @@ export default class GestureHelper extends EventEmitter2 {
         passive: false,
         capture: false,
         swipeVelocity: 60,
-        maxTapDuration: 300,
+        maxTapDuration: 100,
         longTapDuration: 400,
-        startDirectionLoopCount: 2
+        startDirectionLoopCount: 2,
       },
       props[1] || {}
     );
@@ -40,15 +40,15 @@ export default class GestureHelper extends EventEmitter2 {
         get: () => {
           this.eventOptions = {
             passive: !!this.options.passive,
-            capture: !!this.options.capture
+            capture: !!this.options.capture,
           };
-        }
+        },
       });
       this.el.addEventListener("test", null, options);
     } catch (err) {
       console.error(err);
       this.eventOptions = {
-        capture: !!this.options.capture
+        capture: !!this.options.capture,
       };
     }
 
@@ -58,7 +58,7 @@ export default class GestureHelper extends EventEmitter2 {
   clearVelocityStats() {
     this.velocity = {
       current: { x: 0, y: 0 },
-      max: { x: 0, y: 0 }
+      max: { x: 0, y: 0 },
     };
   }
 
@@ -74,35 +74,35 @@ export default class GestureHelper extends EventEmitter2 {
     this.el.addEventListener("touchcancel", this.touchEnd, this.eventOptions);
   }
 
-  mouseMove = e => {
-    this.handleMove({ e: e, x: e.clientX, y: e.clientY });
+  mouseMove = (e) => {
+    this.handleMove({ e: e, x: e.layerX, y: e.layerY });
   };
 
-  touchMove = e => {
-    this.handleMove({ e: e, x: e.touches[0].clientX, y: e.touches[0].clientY });
+  touchMove = (e) => {
+    this.handleMove({ e: e, x: e.touches[0].layerX, y: e.touches[0].layerY });
   };
 
-  touchStart = e => {
+  touchStart = (e) => {
     this.handleStart({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-      e: e
+      x: e.touches[0].layerX,
+      y: e.touches[0].layerY,
+      e: e,
     });
     this.el.addEventListener("touchmove", this.touchMove, this.eventOptions);
   };
 
-  touchEnd = e => {
+  touchEnd = (e) => {
     this.handleEnd(e);
     this.el.removeEventListener("touchmove", this.touchMove, this.eventOptions);
   };
 
-  mouseDown = e => {
+  mouseDown = (e) => {
     if (e.sourceCapabilities.firesTouchEvents) return;
-    this.handleStart({ x: e.clientX, y: e.clientY, e: e });
+    this.handleStart({ x: e.layerX, y: e.layerY, e: e });
     this.el.addEventListener("mousemove", this.mouseMove, this.eventOptions);
   };
 
-  mouseUp = e => {
+  mouseUp = (e) => {
     if (e.sourceCapabilities.firesTouchEvents) return;
     this.handleEnd(e);
     this.el.removeEventListener("mousemove", this.mouseMove, this.eventOptions);
@@ -156,6 +156,14 @@ export default class GestureHelper extends EventEmitter2 {
     this.emit("pan.prestart", { sourceEvent: e });
   }
 
+  checkOutOfBounds({ x, y }) {
+    const tolerance = 3;
+    const width = this.el.offsetWidth - tolerance;
+    const height = this.el.offsetHeight - tolerance;
+    console.log('!!!!!!', x, width, y, height);
+    return x >= width || x <= tolerance || y >= height || y <= tolerance;
+  }
+
   handleMove({ e = {}, x = 0, y = 0 }) {
     const deltaX = x - this.startX;
     const deltaY = y - this.startY;
@@ -170,16 +178,28 @@ export default class GestureHelper extends EventEmitter2 {
       this.panning = true;
       this.emit("pan.start", {
         startDirection: this.startDirection,
-        sourceEvent: e
+        sourceEvent: e,
       });
     }
 
     if (this.panning) {
+      if (
+        this.checkOutOfBounds({
+          x: deltaX + this.startX,
+          y: deltaY + this.startY,
+        })
+      ) {
+        console.log("!!!!!!!!!!!!!!!!!!!", e);
+        this.touchEnd(e);
+        this.mouseUp(e);
+        return false;
+      }
+
       this.emit("pan.all", {
         startDirection: this.startDirection,
         deltaX,
         deltaY,
-        sourceEvent: e
+        sourceEvent: e,
       });
 
       if (this.startDirection === "horizontal") {
@@ -209,7 +229,7 @@ export default class GestureHelper extends EventEmitter2 {
     }
   }
 
-  handleEnd = e => {
+  handleEnd = (e) => {
     const deltaTime = perfNow() - this.startTime;
     this.emit("pan.preend", { sourceEvent: e });
     if (this.panning) {
@@ -230,23 +250,6 @@ export default class GestureHelper extends EventEmitter2 {
         swipeDirection = this.velocity.current.y > 0 ? "down" : "up";
       }
       this.emit("pan.end", { isSwipe, swipeDirection, sourceEvent: e });
-      if (this.options.useMomentum) {
-        this.momentum = momentum({
-          velocity: {
-            x: this.velocity.current.x,
-            y: this.velocity.current.y
-          },
-          from: {
-            x: this.lastDeltaX,
-            y: this.lastDeltaY
-          },
-
-          // @TODO, this feels pretty sloppy.
-          // There must be a nicer way to structure this lib
-          emitter: this
-        });
-        this.momentum.start();
-      }
     } else if (deltaTime <= this.options.maxTapDuration) {
       this.emit("tap", { srcEvent: e });
     }

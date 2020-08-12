@@ -6,30 +6,42 @@ const gestureCtrl = new GestureHelper(document.getElementById("touchArea"), {
   passive: false,
   capture: false,
   startDirectionLoopCount: 2,
-  // useMomentum: true
+  // useMomentum: true, // coming soon
   // longTapDuration: 500, // coming soon
 });
 
 gestureCtrl.on("tap", e => {
-  demoOutput.innerHTML = JSON.stringify(e);
+  demoOutput.innerHTML = `
+    tap event:
+    ${JSON.stringify(e)}
+  `;
   clear();
 });
 
 
 gestureCtrl.on("pan.start", function (ev) {
-  demoOutput.innerHTML = JSON.stringify(ev);
+  demoOutput.innerHTML = `
+    pan.start event:
+    ${JSON.stringify(ev)}
+  `;
 });
 
 gestureCtrl.on("pan.all", handleAll);
 // gestureCtrl.on("pan.x.**", handleX);
 
 gestureCtrl.on("pan.end", function (ev) {
-  demoOutput.innerHTML = JSON.stringify(ev);
+  demoOutput.innerHTML = `
+    pan.end event:
+    ${JSON.stringify(ev)}
+  `
   clear();
 });
 
 function handleAll(ev) {
-  demoOutput.innerHTML = JSON.stringify(ev);
+  demoOutput.innerHTML = `
+    pan.all event:
+    ${JSON.stringify(ev)}
+  `
 }
 
 function handleX(ev) {
@@ -40,4 +52,4 @@ function handleX(ev) {
 const clear = () =>
   setTimeout(() => {
     demoOutput.innerHTML = `click &amp; drag horizontally ...`;
-  }, 5000);
+  }, 2000);
