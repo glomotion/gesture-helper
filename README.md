@@ -73,5 +73,4 @@ yarn demo
   swipeVelocity: Number(60), // Integer: Velocity threshold range for varied swipe detection
   maxTapDuration: Number(300), // Integer: Milliseconds of finger being on the screen before a tap event is ignored
   terminatePanOutsideBounds: false, // This will stop pan events when the cursor approaches the bounds of the hitzone. This helps to eliminate unproperly terminated pan events (zombie events).
-  outsideBoundsOffset: Number(10) // How close the cursor can get to the edge of the hitzone, before the event is terminated early (prevents zombie events)
-```
+  outsideBoundsOffset: Number(10) // How close the cursor can get to the edge of the hitzone, before the event is terminated early
