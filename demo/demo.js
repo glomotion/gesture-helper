@@ -1,4 +1,4 @@
-import GestureHelper from "../src/gesture-helper.js";
+import GestureHelper from "../src/gesture-helper.ts";
 
 const demoOutput = document.getElementById("output");
 const gestureCtrl = new GestureHelper(document.getElementById("touchArea"), {

@@ -1,15 +1,26 @@
-"use strict";
-
-import EventEmitter2 from "eventemitter2";
-import perfNow from "performance-now";
-import { ResizeObserver } from "@juggle/resize-observer";
-import debounce from "lodash.debounce";
+import { EventEmitter2 } from 'eventemitter2';
+import perfNow from 'performance-now';
 
 // @TODO: temp polyfill code, should tidy this a bit..
 import InputDeviceCapabilitiesPolyfill from "./inputdevicecapabilities-polyfill.js";
 InputDeviceCapabilitiesPolyfill(window);
 
 export default class GestureHelper extends EventEmitter2 {
+  el: any;
+  options: any;
+  panning: any;
+  startDirection: any;
+  directionCount: any;
+  dimensions: any;
+  eventOptions: any;
+  velocity: any;
+  startX: any;
+  startY: any;
+  startTime: any;
+  emit: any;
+  lastDeltaX: any;
+  lastDeltaY: any;
+
   constructor(...props) {
     super({
       wildcard: true,
@@ -29,7 +40,7 @@ export default class GestureHelper extends EventEmitter2 {
         terminatePanOutsideBounds: false,
         outsideBoundsOffset: 10,
       },
-      props[1] || {}
+      props[1] || {},
     );
 
     this.panning = false;
@@ -37,14 +48,11 @@ export default class GestureHelper extends EventEmitter2 {
     this.directionCount = 0;
     this.dimensions = { w: 0, h: 0 };
     this.clearVelocityStats();
-    
-    // Deploy a native ResizeOberver for this component instance:
-    this.ro.observe(this.el);
 
     // Small feature detect for support of 'passive' events
     this.eventOptions = false;
     try {
-      var options = Object.defineProperty({}, "passive", {
+      var options = Object.defineProperty({}, 'passive', {
         get: () => {
           this.eventOptions = {
             passive: !!this.options.passive,
@@ -52,7 +60,7 @@ export default class GestureHelper extends EventEmitter2 {
           };
         },
       });
-      this.el.addEventListener("test", null, options);
+      this.el.addEventListener('test', null, options);
     } catch (err) {
       console.error(err);
       this.eventOptions = {
@@ -62,18 +70,6 @@ export default class GestureHelper extends EventEmitter2 {
 
     this.setup();
   }
-
-  ro = new ResizeObserver((entries) => {
-    entries.forEach(() => this.debouncedResize());
-  });
-
-  debouncedResize = debounce(() => {
-    const { offsetWidth, offsetHeight } = this.el;
-    this.dimensions = {
-      w: offsetWidth,
-      h: offsetHeight,
-    };
-  }, 300);
 
   clearVelocityStats() {
     this.velocity = {
@@ -87,70 +83,66 @@ export default class GestureHelper extends EventEmitter2 {
   }
 
   setup() {
-    this.el.addEventListener("mousedown", this.mouseDown, this.eventOptions);
-    this.el.addEventListener("mouseup", this.mouseUp, this.eventOptions);
-    this.el.addEventListener("touchstart", this.touchStart, this.eventOptions);
-    this.el.addEventListener("touchend", this.touchEnd, this.eventOptions);
-    this.el.addEventListener("touchcancel", this.touchEnd, this.eventOptions);
+    this.el.addEventListener('mousedown', this.mouseDown, this.eventOptions);
+    this.el.addEventListener('mouseup', this.mouseUp, this.eventOptions);
+    this.el.addEventListener('touchstart', this.touchStart, this.eventOptions);
+    this.el.addEventListener('touchend', this.touchEnd, this.eventOptions);
+    this.el.addEventListener('touchcancel', this.touchEnd, this.eventOptions);
   }
 
   mouseMove = (e) => {
-    this.handleMove({ e: e, x: e.layerX, y: e.layerY });
+    this.handleMove({ e: e, x: e.clientX, y: e.clientY });
   };
 
   touchMove = (e) => {
-    this.handleMove({ e: e, x: e.touches[0].layerX, y: e.touches[0].layerY });
+    this.handleMove({ e: e, x: e.touches[0].clientX, y: e.touches[0].clientY });
   };
 
   touchStart = (e) => {
     this.handleStart({
-      x: e.touches[0].layerX,
-      y: e.touches[0].layerY,
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
       e: e,
     });
-    this.el.addEventListener("touchmove", this.touchMove, this.eventOptions);
+    this.el.addEventListener('touchmove', this.touchMove, this.eventOptions);
   };
 
   touchEnd = (e) => {
     this.handleEnd(e);
-    this.el.removeEventListener("touchmove", this.touchMove, this.eventOptions);
+    this.el.removeEventListener('touchmove', this.touchMove, this.eventOptions);
   };
 
   mouseDown = (e) => {
     if (e.sourceCapabilities.firesTouchEvents) return;
-    this.handleStart({ x: e.layerX, y: e.layerY, e: e });
-    this.el.addEventListener("mousemove", this.mouseMove, this.eventOptions);
+    this.handleStart({ x: e.clientX, y: e.clientY, e: e });
+    this.el.addEventListener('mousemove', this.mouseMove, this.eventOptions);
   };
 
   mouseUp = (e) => {
     if (e.sourceCapabilities.firesTouchEvents) return;
     this.handleEnd(e);
-    this.el.removeEventListener("mousemove", this.mouseMove, this.eventOptions);
+    this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
   };
 
   destroy() {
-    this.el.removeEventListener("mousedown", this.mouseDown, this.eventOptions);
-    this.el.removeEventListener("mouseup", this.mouseUp, this.eventOptions);
-    this.el.removeEventListener("mousemove", this.mouseMove, this.eventOptions);
+    this.el.removeEventListener('mousedown', this.mouseDown, this.eventOptions);
+    this.el.removeEventListener('mouseup', this.mouseUp, this.eventOptions);
+    this.el.removeEventListener('mousemove', this.mouseMove, this.eventOptions);
     this.el.removeEventListener(
-      "touchstart",
+      'touchstart',
       this.touchStart,
-      this.eventOptions
+      this.eventOptions,
     );
-    this.el.removeEventListener("touchend", this.touchEnd, this.eventOptions);
+    this.el.removeEventListener('touchend', this.touchEnd, this.eventOptions);
     this.el.removeEventListener(
-      "touchcancel",
+      'touchcancel',
       this.touchEnd,
-      this.eventOptions
+      this.eventOptions,
     );
-    this.el.removeEventListener("touchmove", this.touchMove, this.eventOptions);
+    this.el.removeEventListener('touchmove', this.touchMove, this.eventOptions);
   }
 
   getStartDirection({ x = 0, y = 0 }) {
-    // console.log(`getStartDirection()
-    //   x: ${Math.abs(x)},
-    //   y: ${Math.abs(y)},
-    // `);
     if (
       this.directionCount <= this.options.startDirectionLoopCount ||
       Math.abs(x) === Math.abs(y)
@@ -158,8 +150,7 @@ export default class GestureHelper extends EventEmitter2 {
       this.directionCount += 1;
       return null;
     } else {
-      const direction = Math.abs(x) >= Math.abs(y) ? "horizontal" : "vertical";
-      // console.log('!!!!!!!!!!!!!! SET direction !!!!!!!!!!!!', direction);
+      const direction = Math.abs(x) >= Math.abs(y) ? 'horizontal' : 'vertical';
       return direction;
     }
   }
@@ -173,17 +164,10 @@ export default class GestureHelper extends EventEmitter2 {
     this.panning = false;
     this.startTime = perfNow();
     this.clearVelocityStats();
-    this.emit("pan.prestart", { sourceEvent: e });
+    this.emit('pan.prestart', { sourceEvent: e });
   }
 
-  checkOutOfBounds({ x, y }) {
-    const tolerance = this.options.outsideBoundsOffset;
-    const width = this.dimensions.w - tolerance;
-    const height = this.dimensions.h - tolerance;
-    return x >= width || x <= tolerance || y >= height || y <= tolerance;
-  }
-
-  handleMove({ e = {}, x = 0, y = 0 }) {
+  handleMove({ e, x = 0, y = 0 }: { e: any; x: number; y: number }) {
     const deltaX = x - this.startX;
     const deltaY = y - this.startY;
 
@@ -195,40 +179,28 @@ export default class GestureHelper extends EventEmitter2 {
         Math.abs(deltaY) > this.options.sensitivity)
     ) {
       this.panning = true;
-      this.emit("pan.start", {
+      this.emit('pan.start', {
         startDirection: this.startDirection,
         sourceEvent: e,
       });
     }
 
     if (this.panning) {
-      if (
-        this.checkOutOfBounds({
-          x: deltaX + this.startX,
-          y: deltaY + this.startY,
-        }) &&
-        this.options.terminatePanOutsideBounds
-      ) {
-        this.touchEnd(e);
-        this.mouseUp(e);
-        return false;
-      }
-
-      this.emit("pan.all", {
+      this.emit('pan.all', {
         startDirection: this.startDirection,
         deltaX,
         deltaY,
         sourceEvent: e,
       });
 
-      if (this.startDirection === "horizontal") {
+      if (this.startDirection === 'horizontal') {
         deltaX < 0
-          ? this.emit("pan.x.left", { delta: deltaX, sourceEvent: e })
-          : this.emit("pan.x.right", { delta: deltaX, sourceEvent: e });
-      } else if (this.startDirection === "vertical") {
+          ? this.emit('pan.x.left', { delta: deltaX, sourceEvent: e })
+          : this.emit('pan.x.right', { delta: deltaX, sourceEvent: e });
+      } else if (this.startDirection === 'vertical') {
         deltaY < 0
-          ? this.emit("pan.y.up", { delta: deltaY, sourceEvent: e })
-          : this.emit("pan.y.down", { delta: deltaY, sourceEvent: e });
+          ? this.emit('pan.y.up', { delta: deltaY, sourceEvent: e })
+          : this.emit('pan.y.down', { delta: deltaY, sourceEvent: e });
       }
 
       // velocity = total distance moved / the time taken
@@ -237,11 +209,11 @@ export default class GestureHelper extends EventEmitter2 {
       this.velocity.current.y = (deltaY / deltaTime) * 100;
       this.velocity.max.x = Math.max(
         this.velocity.max.x,
-        Math.abs(this.velocity.current.x)
+        Math.abs(this.velocity.current.x),
       );
       this.velocity.max.y = Math.max(
         this.velocity.max.y,
-        Math.abs(this.velocity.current.y)
+        Math.abs(this.velocity.current.y),
       );
       this.lastDeltaX = deltaX;
       this.lastDeltaY = deltaY;
@@ -250,27 +222,27 @@ export default class GestureHelper extends EventEmitter2 {
 
   handleEnd = (e) => {
     const deltaTime = perfNow() - this.startTime;
-    this.emit("pan.preend", { sourceEvent: e });
+    this.emit('pan.preend', { sourceEvent: e });
     if (this.panning) {
       this.panning = false;
       let isSwipe = false;
       let swipeDirection = null;
       if (
         this.velocity.max.x > this.options.swipeVelocity &&
-        this.startDirection === "horizontal"
+        this.startDirection === 'horizontal'
       ) {
         isSwipe = true;
-        swipeDirection = this.velocity.current.x > 0 ? "right" : "left";
+        swipeDirection = this.velocity.current.x > 0 ? 'right' : 'left';
       } else if (
         this.velocity.max.y > this.options.swipeVelocity &&
-        this.startDirection === "vertical"
+        this.startDirection === 'vertical'
       ) {
         isSwipe = true;
-        swipeDirection = this.velocity.current.y > 0 ? "down" : "up";
+        swipeDirection = this.velocity.current.y > 0 ? 'down' : 'up';
       }
-      this.emit("pan.end", { isSwipe, swipeDirection, sourceEvent: e });
+      this.emit('pan.end', { isSwipe, swipeDirection, sourceEvent: e });
     } else if (deltaTime <= this.options.maxTapDuration) {
-      this.emit("tap", { srcEvent: e });
+      this.emit('tap', { srcEvent: e });
     }
 
     return;
