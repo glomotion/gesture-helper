@@ -1,6 +1,6 @@
 {
   "name": "gesture-helper",
-  "version": "0.1.32",
+  "version": "0.1.33",
   "description": "a *tiny* touch & mouse library to help make tracking touch interactions more simple.",
   "unpkg": "dist/index.js",
   "main": "dist/index.js",
@@ -24,14 +24,14 @@
     "performance-now": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "^12.7.2",
     "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
+    "@types/node": "^12.7.2",
     "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
-    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.8.0"
