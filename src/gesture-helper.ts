@@ -50,8 +50,6 @@ export default class GestureHelper extends EventEmitter2 {
     this.dimensions = { w: 0, h: 0 };
     this.clearVelocityStats();
 
-    console.log("@@@@@@@@ this is a debug message @@@@@@@@");
-
     // Small feature detect for support of 'passive' events
     this.eventOptions = false;
     try {
