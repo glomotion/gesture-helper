@@ -20,6 +20,7 @@ export default class GestureHelper extends EventEmitter2 {
   emit: any;
   lastDeltaX: any;
   lastDeltaY: any;
+  moocow: number;
 
   constructor(...props) {
     super({
@@ -50,6 +51,8 @@ export default class GestureHelper extends EventEmitter2 {
     this.dimensions = { w: 0, h: 0 };
     // @TODO: this is also bad code:
     this.clearVelocityStats("asdasads");
+
+    this.moocow = "mooo";
 
     // Small feature detect for support of 'passive' events
     this.eventOptions = false;
