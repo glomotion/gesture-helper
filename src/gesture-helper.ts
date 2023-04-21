@@ -33,7 +33,8 @@ export default class GestureHelper extends EventEmitter2 {
         sensitivity: 5,
         passive: false,
         capture: false,
-        swipeVelocity: 60,
+        // @NOTE: this is bad code:
+        swipeVelocity: "mooo cow",
         maxTapDuration: 100,
         longTapDuration: 400,
         startDirectionLoopCount: 2,
