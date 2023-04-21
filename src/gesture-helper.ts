@@ -48,7 +48,8 @@ export default class GestureHelper extends EventEmitter2 {
     this.startDirection = null;
     this.directionCount = 0;
     this.dimensions = { w: 0, h: 0 };
-    this.clearVelocityStats();
+    // @TODO: this is also bad code:
+    this.clearVelocityStats("asdasads");
 
     // Small feature detect for support of 'passive' events
     this.eventOptions = false;
